@@ -8,11 +8,19 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    dirs: {
+      frontend: {
+        src: "frontend/src"
+      },
+      backend: {
+
+      }
+    },
     bower: {
       install: { }
     },
     jshint: {
-      files: ['Gruntfile.js', 'frontend/src/**/*.js', 'app.js', 'routes/**/*.js']      
+      files: ['Gruntfile.js', '<%= dirs.frontend.src %>/**/*.js', 'app.js', 'routes/**/*.js']      
     },
     nodemon: {
       dev: {
@@ -24,7 +32,7 @@ module.exports = function(grunt) {
     },
     watch: {
       frontend: {
-        files: ['frontend/src/**/*'],
+        files: ['<%= dirs.frontend.src %>/**/*'],
         tasks: ['jshint', 'deployFrontEnd']
       },
       backend: {
@@ -34,13 +42,13 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['frontend/src/drewbotClient.js', 'frontend/src/*.js', 'frontend/src/**/*.js', 'frontend/drewbotClient-templates.js'],
+        src: ['<%= dirs.frontend.src %>/drewbotClient.js', '<%= dirs.frontend.src %>/*.js', '<%= dirs.frontend.src %>/**/*.js', 'frontend/drewbotClient-templates.js'],
         dest: 'public/javascripts/drewbotClient.js',
       },
     },
     ngtemplates:  {
       "em-drewbot": {
-        cwd: 'frontend/src',
+        cwd: '<%= dirs.frontend.src %>',
         src: '**.html',
         dest: 'frontend/drewbotClient-templates.js'
       }
