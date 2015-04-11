@@ -1,25 +1,47 @@
 module.exports = function(grunt) {
-
-  grunt.loadNpmTasks('grunt-bower-task');
-  require('jit-grunt')(grunt);
+  
+  require('jit-grunt')(grunt, {
+    ngtemplates: 'grunt-angular-templates'
+  });
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     bower: {
-      install: {
-      }
+      install: { }
     },
     jshint: {
-      files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-      options: {
-        globals: {
-          jQuery: true
+      files: ['Gruntfile.js', 'frontend/src/**/*.js', 'app.js', 'routes/**/*.js']      
+    },
+    nodemon: {
+      dev: {
+        script: 'bin/www',
+        options: {
+          watch: ['app.js', 'bin', 'routes', 'views']
         }
       }
     },
     watch: {
-      files: ['<%= jshint.files %>'],
-      tasks: ['jshint']
+      frontend: {
+        files: ['frontend/src/**/*'],
+        tasks: ['jshint', 'deployFrontEnd']
+      },
+      backend: {
+        files: ['app.js', 'routes/**/*'],
+        tasks: ['jshint']
+      }
+    },
+    concat: {
+      dist: {
+        src: ['frontend/src/drewbotClient.js', 'frontend/src/*.js', 'frontend/src/**/*.js', 'drewbotClient-templates.js'],
+        dest: 'public/javascripts/drewbotClient.js',
+      },
+    },
+    ngtemplates:  {
+      "em-drewbot": {
+        cwd: 'frontend/src',
+        src: '**.html',
+        dest: 'drewbotClient-templates.js'
+      }
     },
     copy: {
       lib: {
@@ -33,13 +55,21 @@ module.exports = function(grunt) {
                 'angular/angular.min.js.map',
                 'underscore/underscore.js'
             ],
-            dest: 'public/javascripts'
+            dest: 'public/lib'
         }]
       }
+    },
+    concurrent: {
+        watchers: ['nodemon', 'watch:frontend', 'watch:backend'],
+        options: {
+          logConcurrentOutput: true
+        }
     }
   });
 
-  grunt.registerTask('default', ['jshint', 'copy']);
-  grunt.registerTask('dist', ['jshint', 'bower', 'copy']);
+  grunt.registerTask('deployFrontEnd', ['ngtemplates', 'concat']);
+  grunt.registerTask('build', ['jshint', 'deployFrontEnd']);
+  grunt.registerTask('compile', ['bower', 'copy:lib', 'build']);
+  grunt.registerTask('start', ['build', 'concurrent:watchers']);
 
 };

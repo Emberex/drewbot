@@ -22,5 +22,11 @@
     "morgan": "~1.5.1",
     "package-script": "0.0.8",
     "serve-favicon": "~2.2.0"
+  },
+  "devDependencies": {
+    "grunt-angular-templates": "^0.5.7",
+    "grunt-concurrent": "^1.0.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-nodemon": "^0.4.0"
   }
 }
