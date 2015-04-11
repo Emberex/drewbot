@@ -1,4 +1,6 @@
 bower_components
 lib
 node_modules
+pkgscripts.log
 public/javascripts/**
+frontend/drewbotClient-templates.js

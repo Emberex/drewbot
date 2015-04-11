@@ -32,7 +32,7 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['frontend/src/drewbotClient.js', 'frontend/src/*.js', 'frontend/src/**/*.js', 'drewbotClient-templates.js'],
+        src: ['frontend/src/drewbotClient.js', 'frontend/src/*.js', 'frontend/src/**/*.js', 'frontend/drewbotClient-templates.js'],
         dest: 'public/javascripts/drewbotClient.js',
       },
     },
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       "em-drewbot": {
         cwd: 'frontend/src',
         src: '**.html',
-        dest: 'drewbotClient-templates.js'
+        dest: 'frontend/drewbotClient-templates.js'
       }
     },
     copy: {
