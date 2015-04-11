@@ -1,7 +1,9 @@
 module.exports = function(grunt) {
   
   require('jit-grunt')(grunt, {
-    ngtemplates: 'grunt-angular-templates'
+    ngtemplates: 'grunt-angular-templates',
+    bower: 'grunt-bower-task'
+
   });
 
   grunt.initConfig({
