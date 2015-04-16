@@ -1,123 +1,325 @@
-$fs=1;
-$fa=1;
+// TODO:
+//  eraser:  resize peg.
+//           make it taller.
+//  base:    make servo box bigger.
+//           make base ends line up with holder ends.
+//  holder:  offset cable pass-through.
+//           rotate servos into place.
+//           correct servo shaft diameter
+//           make holder ends line up with base ends.
+//  arms:    correct servo shaft diameter
+//  pen arm: flip upside down.
 
-servo_l = 24;
-servo_w = 13;
-servo_h = 21;
 
-bolt_hole_diameter = 4.5;
-servo_axis_diameter = 4;
+hq = true;
 
-magnet_hole_l = 10.5;
-magnet_hole_w = 6.5;
-magnet_hole_d = 2;
-magnet_hole_margin = 2;
+$fs = hq ? 1 : 4;
+$fa = hq ? 1 : 4;
+eps = 0.1;
 
-base_l = servo_l * 2 + 24;
-base_w = 44;
-base_h = 3;
+// Servo dimensions.  We use Adafruit high torque microservers.
+// https://www.adafruit.com/products/1143
+servo_l  = 23;                  // length
+servo_w  = 13;                  // width
+servo_h  = 5;                   // height above deck
+servo_d  = 19;                  // depth below deck
+servo_sh = 10;                  // shaft height above deck
+servo_sx = 5;                   // shaft X coord
+servo_sd = 5;                   // shaft diameter
+servo_bh = servo_h + servo_d;   // servo body height
+servo_fl = 5;                   // flange length
 
-base_joint_space = 0.7;
-base_joint_height = 26;
+// Base magnet dimensions.  We use these block magnets from Gauss Boys.
+// http://www.gaussboys.com/store/index.php/magnet-shapes/blocks/b2506e-n42.html
+magnet_l = 25;                  // length
+magnet_w = 12;                  // width
+magnet_h = 6;                   // height
 
-arm_h = 5;
+// Eraser magnet dimensions.  We use this toroidal magnet.
+// http://www.gaussboys.com/store/index.php/magnet-shapes/rings/r2506.html
+eraser_magnet_d1 = 25;          // outer diameter
+eraser_magnet_d2 = 12.5;        // inner diameter
+eraser_magnet_t  = 6;           // thickness
+
+// We use M5x14 socket-head machine screws and nylon locknuts.
+// http://www.mcmaster.com/#91290A230
+// http://www.mcmaster.com/#90576A104
+bore_d = 5;                     // diameter
+nut_t = 5;                      // locknut thickness
+arm_t = 4;                      // arm thickness (14 - nut len) / 2
+
+// Pen dimensions.  We use an Expo dry-erase marker.
+// http://www.expomarkers.com/markers/low-odor
+pen_d1 = 17;                    // body diameter
+pen_d2 = 9;                     // tip diameter
+pen_tl = 25;                    // tip length
+pen_wt = 3;                     // wall thickness
+
+// Servo Holder Dimensions
+sh_xmargin = 5;                 // margins around servos
+sh_y0margin = 4;
+sh_y1margin = 7;
+sh_l = 2 * (servo_l + 2 * sh_xmargin); // overall length
+sh_w = servo_w + sh_y0margin + sh_y1margin;
+sh_t = 9;                       // thickness
+sh_bl = 15;                     // bracket length
+sh_bw = sh_t;
+sh_bt = arm_t;                  // bracket thickness
+sh_pd = sh_bl - sh_t / 2;       // pivot distance
+
+// Base Dimensions
+base_margin = 4;
+base_magnet_lift = 1;
+base_magnet_inset_d = 4;        // depth magnets are inset into base
+base_arm_clr = 0.7;             // base arm clearance
+base_pivot_height = 26;
+base_at = arm_t;                // arm thickness
+base_aw = sh_t;
+base_al = base_pivot_height + base_aw / 2;
+base_pl = sh_l - 2 * (sh_bt + base_arm_clr); // pedestal length
+base_pw = servo_w + 2 * base_margin;
+base_ph = 15;
+base_l = sh_l;                  // overall length
+base_w = base_pw + 2 * magnet_w + 4 * base_margin;
+base_h = base_magnet_inset_d + base_magnet_lift; // height
+base_servo_x = -base_pl/2 + base_at + nut_t + 1;
+base_servo_dx = base_servo_x + servo_d;
+base_lift_x = base_servo_dx + servo_sh;
+base_servo_z = base_pivot_height - servo_sx - servo_l / 2;
+
+// Eraser Dimensions
+eraser_d1 = eraser_magnet_d1;   // diameter under magnet
+eraser_d2 = eraser_magnet_d2;   // diameter inside magnet
+eraser_d3 = pen_d2 + 1;         // diameter around pen
+eraser_t1 = 5;                  // thickness under magnet
+eraser_t2 = 1;                  // thickness under pen tip
+eraser_h  = 12;
+
+// Arm Dimensions
 arm_w = 5;
 arm_l = 50;
 
-pen_diameter = 13;
+// Pen Arm Dimensions
+pen_offset = (pen_d1 + bore_d) / 2 + pen_wt;
+pen_arm_lsl = pen_tl - eraser_h + 1; // lower sleeve length
+pen_arm_usl = 3;                     // upper sleeve length
 
-eraser_magnet_diameter = 25.5;
 
-module servoholder(h = 8) {
-	module bolt_bracket(d) {
-		r=d/2;
-		translate([-14,0,h/2])
-		difference() {
-			translate([4,0]) cube([18,5,h], center=true);
-			rotate(a=90,v=[1,0,0]) cylinder(r=r, h=20, center=true);
-		}
-	}
-	translate([0,0,-h/2]) {
-		for (i = [0,1]) mirror([0,i,0]) {
-			translate([0,5,0])
-			difference() {
-				translate([-4, -6]) cube([servo_w + 8, servo_l + 12, h]);
-				translate([0,0,-1]) cube([servo_w, servo_l, h + 2]);
-			}
-			translate([0,5/2 + servo_l + 6,0]) bolt_bracket(bolt_hole_diameter);
-		}
-		translate([0,-17,0]) bolt_bracket(servo_axis_diameter);
-	}
+module centered_cube(size, zt=0) {
+    translate([-size[0] / 2, -size[1] / 2, zt])
+        cube(size);
 }
 
 module base() {
+    difference() {
+        union() {
+
+            // flat section
+            centered_cube([base_l, base_w, base_h]);
+
+            // pedestal
+            difference() {
+            centered_cube([base_pl, base_pw, base_ph - eps], zt=eps);
+            }
+        }
+
+        // magnet insets
+        for (x = [-1, +1], y = [-1, +1])
+            scale([x, y, 1])
+                translate([(base_l - magnet_l) / 2 - base_margin,
+                           (base_w - magnet_w) / 2 - base_margin,
+                           base_magnet_lift]) {
+                    centered_cube([magnet_l, magnet_w, magnet_h]);
+                    cylinder(d=magnet_w, h=base_h, center=true);
+                }
+
+        // lift servo cavity
+        translate([base_servo_x, -servo_w / 2, base_servo_z])
+            cube([servo_bh, servo_w, servo_l]);
+
+        // lift servo flange cavity
+        translate([base_servo_dx, -servo_w / 2, base_servo_z - servo_fl - 1])
+            cube([3, servo_w, servo_fl + 2]);
+    }
+
+
+    // arms
+    for (x = [0, 1])
+        mirror([x, 0, 0])
+            translate([(base_pl - base_at) / 2, 0, 0])
+                difference() {
+
+                    // arm uprights
+                    centered_cube([base_at, base_aw, base_al - eps], eps);
+
+                    // arm bores
+                    translate([0, 0, base_pivot_height])
+                        rotate(90, [0, 1, 0])
+                            cylinder(d=bore_d, h=base_at + 2, center=true);
+                }
+}
+
+module servoholder(h=9) {
+
+    module bracket(d, t) {
+        translate([0, servo_w / 2 + sh_y1margin - eps, 0]) {
+            difference() {
+                cube([t, sh_bl + eps, sh_bw]);
+                translate([-eps, sh_pd, sh_bw / 2])
+                rotate(90, [0, 1, 0])
+                    cylinder(d=d, h=t + 2 * eps);
+            }
+        }
+    }
+
+    difference() {
+        union() {
+            // body
+            translate([-sh_l / 2, -servo_w / 2 - sh_y0margin, 0])
+                cube([sh_l, sh_w, sh_t]);
+            // raise right servo
+            translate([0, -servo_w / 2 - sh_y0margin, eps])
+                cube([sh_l / 2, sh_w, sh_t + arm_t - eps]);
+
+            // outer brackets
+            for (x = [-1, +1])
+                scale([x, 1, 1])
+                    translate([sh_l / 2 - sh_bt, 0, 0])
+                        bracket(d=bore_d, t=sh_bt);
+
+            // lift arm
+            translate([base_lift_x, 0, 0])
+                bracket(d=servo_sd, t=arm_t);
+        }
+
+        // servo cutouts
+        for (i = [0, 1])
+            mirror([i, 0, 0]) {
+                translate([-sh_l / 2 + sh_xmargin, 0, sh_t + i * arm_t]) {
+                    for (a = [0, 8])
+                        rotate(a) {
+                            translate([0, -servo_w / 2,  - servo_d])
+                                cube([servo_l, servo_w, servo_bh]);
+                            if (a) {
+                                translate([servo_l, 0, -sh_t - arm_t])
+                                    centered_cube([6, 4, 2 * sh_t], -eps);
+                            } else {
+                                translate([servo_l, 0, -12 - 4])
+                                    cube([6, 6, 8], center=true);
+                            }
+                       }
+                }
+            }
+    }
+}
+
+module eraser() {
+    difference() {
+        union() {
+            // thick disk under magnet
+            cylinder(d=eraser_d1, h=eraser_t1);
+        
+            // sleeve around pen
+            cylinder(d=eraser_d2, h=eraser_h);
+        }
+        // hole for pen
+        translate([0, 0, eraser_t2])
+        cylinder(d=eraser_d3, h=eraser_h);
+    }
+}
+
+module ring(di, do, h) {
 	difference() {
-		translate([-base_w/2,-base_l/2]) cube([base_w,base_l,base_h]);
-		for (i = [0,1]) mirror([i,0,0])
-		for (j = [0,1]) mirror([0,j,0]) {
-			translate([
-				base_w/2 - magnet_hole_w - magnet_hole_margin,
-				base_l/2 - magnet_hole_l - magnet_hole_margin,
-				base_h - magnet_hole_d
-			])
-			cube([magnet_hole_w,magnet_hole_l,magnet_hole_d+1]);
-		}
-	}
-	difference() {
-		for (i = [0, 1]) mirror([0,i,0]) {
-			translate([-servo_w/2 - 4, 0, 0]) cube([servo_w + 8, servo_l + 6 - base_joint_space, 15]);
-			translate([0, servo_l + 6 - base_joint_space , 0])
-			difference() {
-				translate([-5, -5, 0]) cube([10, 5, base_joint_height + 4]);
-				translate([0,1,base_joint_height]) rotate(a=90, v=[1,0,0]) cylinder(r=bolt_hole_diameter/2, h=10);
-			}
-		}
-		translate([-servo_w/2,-servo_h/2,8]) {
-			cube([servo_w,servo_h,servo_l]);
-			translate([0,3.5,-4]) cube([12,3,6]);
-		}
+		cylinder(h=h, r=do/2);
+		translate([0, 0, -1])
+			cylinder(h=h+2, r=di/2);
 	}
 }
 
+
 module arm_ring(d) {
-	do = d + arm_w;
-	difference() {
-		cylinder(h=arm_h, r=do/2);
-		translate([0,0,-1]) cylinder(h=arm_h+2, r=d/2);
-	}
+	ring(d, d + arm_w, arm_t);
 }
 
 module arm(hole1, hole2) {
 	arm_ring(hole1);
-	translate([hole1/2,-arm_w/2,0]) cube([arm_l-hole1/2-hole2/2,arm_w,arm_h]);
-	translate([arm_l,0,0]) arm_ring(hole2);
+	translate([hole1 / 2, -arm_w / 2, 0])
+		cube([arm_l-hole1 / 2 - hole2 / 2, arm_w, arm_t]);
+	translate([arm_l, 0, 0])
+		arm_ring(hole2);
+}
+
+module pen_ring() {
+	d1 = pen_d1;
+	d1w = d1 + 2 * pen_wt;
+	d2 = pen_d2;
+	d2w = d2 + 2 * pen_wt;
+	lsl = pen_arm_lsl;         // lower sleeve length
+     usl = pen_arm_usl;         // upper sleeve length
+	bl = usl + d1 / 2;         // inner bullet length
+	blw = bl + pen_wt;     // outer bullet_length
+
+	module bullet(d, h) {
+		intersection() {
+			hull() {
+				translate([0, 0, h - d/2])
+					sphere(d=d);
+					cylinder(d=d, h=1);
+			}
+			cylinder(d=d+1, h=h);
+		}
+	}
+	difference() {
+		union() {
+			bullet(d=d1w, h=blw);
+			translate([0, 0, eps])
+				cylinder(d=d2w, h=bl + lsl - eps);
+		}
+          translate([0, 0, -eps])
+              bullet(d=d1, h=bl + eps);
+          cylinder(d=d2, h=lsl + usl + d1 / 2 + eps);
+	}
 }
 
 module pen_arm() {
-	arm(bolt_hole_diameter, bolt_hole_diameter);
-	rotate(a=45,v=[0,0,1])
-	translate([-arm_w/2-pen_diameter/2-bolt_hole_diameter/2,0])
-	difference() {
-		arm_ring(pen_diameter, pen_diameter + arm_w);
-		translate([-pen_diameter/2,0,-1]) cylinder(r=pen_diameter/2,h=arm_h+2);
-	}
-}
-
-module eraser() {
-	module ring(di,do,h) {
+	arm(bore_d, bore_d);
+	rotate(a=45)
 		difference() {
-			cylinder(h=h, r=do/2);
-			translate([0,0,-1]) cylinder(h=h+2, r=di/2);
+			translate([-pen_offset, 0, 0])
+				pen_ring();
+			translate([0, 0, arm_t]) {
+				cylinder(d=bore_d + arm_w + 0.5, h=arm_t + 0.5);
+				cylinder(d=9, h=100);
+			}
+			translate([0, 0, -1])
+				cylinder(d=bore_d, h=arm_t + 2);
 		}
-	}
-	ring(10, eraser_magnet_diameter + 1, 5);
-	ring(eraser_magnet_diameter, eraser_magnet_diameter + 2.5, 8);
 }
 
-color("yellow") translate([-50,0,0]) base();
-color("red") translate([0,0,4]) servoholder();
-color("green") translate([40, 30, 0]) arm(servo_axis_diameter, bolt_hole_diameter);
-color("green") translate([40, 10, 0]) arm(servo_axis_diameter, bolt_hole_diameter);
-color("green") translate([40, -10, 0]) arm(bolt_hole_diameter, bolt_hole_diameter);
-color("green") translate([40, -30, 0]) pen_arm();
-color("blue") translate([60, 60, 0]) eraser();
+ color("yellow") 
+ 	translate([0, 70, 0])
+ 		base();
+
+ color("blue")
+ 	translate([50, 70, 0])
+ 		eraser();
+
+ color("red")
+      translate([0, 0, 0])
+           servoholder();
+
+ color("green")
+ 	translate([-25, -20, 0])
+           pen_arm();
+
+color("green")
+	translate([-13, -30, 0])
+		arm(bore_d, servo_sd);
+
+color("green")
+	translate([-20, -40, 0])
+		arm(bore_d, bore_d);
+
+color("green")
+     translate([-30, -50, 0])
+		arm(bore_d, servo_sd);
