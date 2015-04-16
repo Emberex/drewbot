@@ -29,6 +29,24 @@ servo_sd = 5;                   // shaft diameter
 servo_bh = servo_h + servo_d;   // servo body height
 servo_fl = 5;                   // flange length
 
+// Servo horn dimensions.  We use the smallest horn that comes with
+// the servo.  It has a single arm and six small holes.
+horn_hub_d1 = 7.3;              // outer diameter
+horn_hub_d2 = 4.83;             // inner diameter
+horn_hub_d3 = 2.33;             // screw hole diameter
+
+horn_hub_h1 = 5.4;              // overall height
+horn_hub_h2 = 3.65;             // lower cavity height
+horn_hub_h3 = 1.06;             // upper cavity height
+
+horn_arm_d1 = 5.72;             // diameter at hub
+horn_arm_d2 = 4;                // diameter at tip
+horn_arm_len = 15;              // distance from hub to last hole
+horn_arm_z = 2.58;              // height above hub bottom
+horn_arm_t = 1.96;              // thickness
+horn_arm_holes = [5, 7, 9, 11, 13, 15]; // holes' X coordinates
+horn_arm_hole_d = 1;                    // holes' diameter
+
 // Base magnet dimensions.  We use these block magnets from Gauss Boys.
 // http://www.gaussboys.com/store/index.php/magnet-shapes/blocks/b2506e-n42.html
 magnet_l = 25;                  // length
@@ -98,12 +116,55 @@ eraser_h  = 12;
 // Arm Dimensions
 arm_w = 5;
 arm_l = 50;
+arm_clr = 0.3;
 
 // Pen Arm Dimensions
 pen_offset = (pen_d1 + bore_d) / 2 + pen_wt;
 pen_arm_lsl = pen_tl - eraser_h + 1; // lower sleeve length
 pen_arm_usl = 3;                     // upper sleeve length
 
+
+module servo_horn() {
+	// Render the horn with fine detail.
+	$fs = 0.1;
+	$fa = 1;
+
+	module hub_hull() {
+		cylinder(d=horn_hub_d1, h=horn_hub_h1);
+	}
+	
+	module hub_cutouts() {
+		translate([0, 0, -eps])
+			cylinder(d=horn_hub_d2, h=horn_hub_h2 + eps);
+		translate([0, 0, horn_hub_h1 - horn_hub_h3])
+			cylinder(d=horn_hub_d2, h=horn_hub_h1);
+		cylinder(d=horn_hub_d3, h=horn_hub_h1);
+	}
+	
+	module arm_hull() {
+		translate([0, 0, horn_arm_z])
+			hull() {
+				cylinder(d=horn_arm_d1, h=horn_arm_t);
+				translate([horn_arm_len, 0, 0])
+					cylinder(d=horn_arm_d2, h=horn_arm_t);
+			}
+	}
+	
+	module arm_cutouts() {
+		for (x = horn_arm_holes)
+			translate([x, 0, 0])
+				cylinder(d=horn_arm_hole_d, h=horn_hub_d1);
+	}
+
+	difference() {
+		union() {
+			hub_hull();
+			arm_hull();
+		}
+		hub_cutouts();
+		// arm_cutouts();
+	}
+}
 
 module centered_cube(size, zt=0) {
     translate([-size[0] / 2, -size[1] / 2, zt])
@@ -296,30 +357,50 @@ module pen_arm() {
 		}
 }
 
- color("yellow") 
+module servo_arm() {
+	difference() {
+		union() {
+			hull() {
+				cylinder(d=horn_hub_d1 + arm_w, h=arm_t);
+				translate([arm_l, 0, 0])
+					cylinder(d=bore_d, h=arm_t);
+			}
+			translate([arm_l, 0, 0])
+				arm_ring(bore_d);
+		}
+		translate([0, 0, -eps]) {
+			servo_horn();
+			cylinder(d=horn_hub_d1 + arm_clr, h=arm_t + 2 * eps);
+		}
+		translate([arm_l, 0, -eps])
+			cylinder(d=bore_d, h=arm_t + 2 * eps);
+	}
+}
+
+color("yellow") 
  	translate([0, 70, 0])
  		base();
 
- color("blue")
+color("blue")
  	translate([50, 70, 0])
  		eraser();
 
- color("red")
+color("red")
       translate([0, 0, 0])
            servoholder();
 
- color("green")
+color("green")
  	translate([-25, -20, 0])
            pen_arm();
 
 color("green")
 	translate([-13, -30, 0])
-		arm(bore_d, servo_sd);
-
-color("green")
-	translate([-20, -40, 0])
 		arm(bore_d, bore_d);
 
 color("green")
-     translate([-30, -50, 0])
-		arm(bore_d, servo_sd);
+	translate([-20, -45, 0])
+		servo_arm();
+
+color("green")
+     translate([-30, -60, 0])
+		servo_arm();
