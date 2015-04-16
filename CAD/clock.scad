@@ -79,7 +79,7 @@ sh_y0margin = 4;
 sh_y1margin = 7;
 sh_l = 2 * (servo_l + 2 * sh_xmargin); // overall length
 sh_w = servo_w + sh_y0margin + sh_y1margin;
-sh_t = 9;                       // thickness
+sh_t = 10;                      // thickness
 sh_bl = 15;                     // bracket length
 sh_bw = sh_t;
 sh_bt = arm_t;                  // bracket thickness
@@ -249,8 +249,17 @@ module servoholder(h=9) {
                         bracket(d=bore_d, t=sh_bt);
 
             // lift arm
-            translate([base_lift_x, 0, 0])
-                bracket(d=servo_sd, t=arm_t);
+            translate([base_lift_x, 0, 0]) {
+                difference() {
+                    bracket(d=horn_hub_d1 + arm_clr, t=arm_t);
+                    translate([-eps,
+                               servo_w/2 + sh_y1margin + sh_pd,
+                               sh_bw / 2])
+                        rotate(90, [0, 1, 0])
+                            rotate(-90, [0, 0, 1])
+                                servo_horn();
+                }
+            }
         }
 
         // servo cutouts
