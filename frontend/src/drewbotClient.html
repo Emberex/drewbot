@@ -1,4 +1,11 @@
 <div>
-	<div>Welcome friends!!</div>
-	<div>{{ postResponse }}</div>
+	<h1>Welcome!!</h1>
+    <input type="text" ng-model="model.message"/>
+    <button ng-click="sendMessage()">Send</button>
+
+    <ul>
+        <li ng-repeat="response in model.responses">
+            <p>{{response}}</p>
+        </li>
+    </ul>
 </div>
