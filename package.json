@@ -29,8 +29,10 @@
     "serve-favicon": "~2.2.0"
   },
   "devDependencies": {
+    "grunt": "^0.4.5",
     "grunt-angular-templates": "^0.5.7",
     "grunt-concurrent": "^1.0.0",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-nodemon": "^0.4.0",
     "serialport": "^1.6.3"

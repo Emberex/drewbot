@@ -74,7 +74,8 @@ module.exports = function(grunt) {
         options: {
           logConcurrentOutput: true
         }
-    }
+    },
+    clean: ["frontend/drewbotClient-templates.js"]
   });
 
   grunt.registerTask('deployFrontEnd', ['ngtemplates', 'concat']);
