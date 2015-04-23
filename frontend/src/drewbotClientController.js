@@ -1,6 +1,6 @@
 angular.module('em-drewbot').controller('DrewbotClientController', ['$scope', '$http', 
     function($scope, $http) {
-        $scope.model = { 
+        $scope.model = {
             message: "",
             responses: []
         };
@@ -9,7 +9,7 @@ angular.module('em-drewbot').controller('DrewbotClientController', ['$scope', '$
             $http.post('/write', {msg:$scope.model.message}).success(function(data, status, headers, config) {
                 $scope.model.responses.push(data);
             }).error(function(data, status, headers, config) {
-                scope.model.responses.push(data);
+                $scope.model.responses.push(data);
             });
         };
     }
