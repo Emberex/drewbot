@@ -1,11 +1,5 @@
 <div>
 	<h1>Welcome!!</h1>
-    <input type="text" ng-model="model.message"/>
-    <button ng-click="sendMessage()">Send</button>
-
-    <ul>
-        <li ng-repeat="response in model.responses">
-            <p>{{response}}</p>
-        </li>
-    </ul>
+    <button ng-click="sendMessage()">Draw that line!</button>
+    <p>{{model.response}}</p>
 </div>

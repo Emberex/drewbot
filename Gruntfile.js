@@ -13,7 +13,7 @@ module.exports = function(grunt) {
         src: "frontend/src"
       },
       backend: {
-
+        src: "backend/src"
       }
     },
     bower: {
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       dev: {
         script: 'bin/www',
         options: {
-          watch: ['app.js', 'bin', 'routes', 'views']
+          watch: ['app.js', 'bin', 'routes', 'views', '<%= dirs.backend.src %>']
         }
       }
     },
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         tasks: ['jshint', 'deployFrontEnd']
       },
       backend: {
-        files: ['app.js', 'routes/**/*'],
+        files: ['app.js', 'routes/**/*', '<%= dirs.backend.src %>/**/*' ],
         tasks: ['jshint']
       }
     },
