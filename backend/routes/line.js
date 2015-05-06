@@ -8,7 +8,9 @@ router.post('/', function(req, res) {
     var port = serialportService.getSerialPort();
     
     port.write("on\n", function(err, results) {
-        console.log('err ' + err);
+        if(err) {
+           console.log('err ' + err); 
+        }
         console.log('results ' + results);
     });
     

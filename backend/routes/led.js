@@ -13,7 +13,9 @@ router.post('/', function(req, res) {
     }
     
     port.write(toggle+"\n", function(err, results) {
-        console.log('err ' + err);
+        if(err) {
+           console.log('err ' + err); 
+        }
         console.log('results ' + results);
     });
     res.send('Turning LED ' + toggle + ' ...'+ drewbotUtils.getCurrentFormattedTime());
