@@ -13,20 +13,20 @@ module.exports = function(grunt) {
         src: "frontend/src"
       },
       backend: {
-        src: "backend/src"
+        src: "backend"
       }
     },
     bower: {
       install: { }
     },
     jshint: {
-      files: ['Gruntfile.js', '<%= dirs.frontend.src %>/**/*.js', 'app.js', 'routes/**/*.js']      
+      files: ['Gruntfile.js', '<%= dirs.frontend.src %>/**/*.js', '<%= dirs.backend.src %>/**/*.js']      
     },
     nodemon: {
       dev: {
-        script: 'bin/www',
+        script: '<%= dirs.backend.src %>/bin/www',
         options: {
-          watch: ['app.js', 'bin', 'routes', 'views', '<%= dirs.backend.src %>']
+          watch: ['<%= dirs.backend.src %>']
         }
       }
     },
@@ -36,13 +36,13 @@ module.exports = function(grunt) {
         tasks: ['jshint', 'deployFrontEnd']
       },
       backend: {
-        files: ['app.js', 'routes/**/*', '<%= dirs.backend.src %>/**/*' ],
+        files: ['<%= dirs.backend.src %>/**/*' ],
         tasks: ['jshint']
       }
     },
     concat: {
       dist: {
-        src: ['<%= dirs.frontend.src %>/drewbotClient.js', '<%= dirs.frontend.src %>/*.js', '<%= dirs.frontend.src %>/**/*.js', 'frontend/drewbotClient-templates.js'],
+        src: ['<%= dirs.frontend.src %>/drewbotClient.js', '<%= dirs.frontend.src %>/**/*.js', 'frontend/drewbotClient-templates.js'],
         dest: 'public/javascripts/drewbotClient.js',
       },
     },

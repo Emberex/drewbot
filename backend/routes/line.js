@@ -1,5 +1,5 @@
 var express = require('express');
-var drewbotUtils = require('./../backend/src/drewbotUtils');
+var drewbotUtils = require('./../services/drewbotUtils');
 var router = express.Router();
 
 router.post('/', function(req, res) {

@@ -1,5 +1,5 @@
 var express = require('express');
-var drewbotUtils = require('./../backend/src/drewbotUtils');
+var drewbotUtils = require('./../services/drewbotUtils');
 
 var serialPort = require('serialport');
 var port;

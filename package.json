@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node ./backend/bin/www",
     "postinstall": "node ./scripts/installGlobalDependencies.js"
   },
   "repository": {
