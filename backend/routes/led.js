@@ -1,24 +1,11 @@
 var express = require('express');
 var drewbotUtils = require('./../services/drewbotUtils');
-
-var serialPort = require('serialport');
-var port;
-serialPort.list(function(err, ports) {
-    console.log("Opening serial port: ", ports.slice(-1)[0].comName);
-    port = new serialPort.SerialPort(ports.slice(-1)[0].comName, null, false);
-    port.open(function(err) { 
-        console.log("on open err: ", err);
-    });
-});
-
+var serialportService = require('./../services/serialportService');
 
 var router = express.Router();
 
 router.post('/', function(req, res) {
-    
-    port.on('data', function(data) {
-        console.log('data received: ' + data);
-    });
+    var port = serialportService.getSerialPort();
     
     var toggle = "off";
     if(req.body.toggleOn) {
