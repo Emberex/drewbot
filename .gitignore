@@ -4,3 +4,4 @@ node_modules
 public/javascripts/**
 frontend/drewbotClient-templates.js
 pkgscript.log
+npm-debug.log
