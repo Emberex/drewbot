@@ -5,9 +5,9 @@ var serialportService = require('./../services/serialportService');
 var router = express.Router();
 
 router.post('/', function(req, res) {
-    var port = serialportService.getSerialPort();
-    
-    port.write("on\n", function(err, results) {
+    var port = serialportService.getSerialPort();    
+        
+    port.write(req.body.command, function(err, results) {
         if(err) {
            console.log('err ' + err); 
         }
