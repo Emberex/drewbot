@@ -1,0 +1,42 @@
+<html>
+
+<head>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+   <link rel="stylesheet" type="text/css" href="bot.css"></link>
+   <script type="text/javascript" src="botChars.js"></script>
+   <script type="text/javascript" src="botEngine.js"></script>
+   <script type="text/javascript" src="botUtils.js"></script>
+   <script type="text/javascript" src="botDraw.js"></script>
+   <script type="text/javascript" src="bot.js"></script>
+
+</head>
+
+
+<body>
+   <div>
+   <canvas id="canvas" width="800px" height="400px">   </canvas>
+   </div>
+   <div>
+      Bot Commands
+   </div>
+   <div id="commandCount">
+      -
+   </div>
+   <button onclick="playback()">Playback!</button>
+   <button onclick="pretend()">Pretend!</button>   <div>
+      <textarea id="output" type="text" rows="10" cols="10" ></textarea>
+      <textarea id="outputPosition" type="text" rows="10" cols="20" ></textarea>
+   </div>
+   <script type="text/javascript">
+
+      initBot("canvas");
+      update();
+
+   </script>
+
+</body>
+
+</html>
