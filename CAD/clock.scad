@@ -1,16 +1,3 @@
-// TODO:
-//  eraser:  resize peg.
-//           make it taller.
-//  base:    make servo box bigger.
-//           make base ends line up with holder ends.
-//  holder:  offset cable pass-through.
-//           rotate servos into place.
-//           correct servo shaft diameter
-//           make holder ends line up with base ends.
-//  arms:    correct servo shaft diameter
-//  pen arm: flip upside down.
-
-
 hq = true;
 
 $fs = hq ? 1 : 4;
@@ -121,7 +108,7 @@ arm_clr = 0.3;
 // Pen Arm Dimensions
 pen_offset = (pen_d1 + bore_d) / 2 + pen_wt;
 pen_arm_lsl = pen_tl - eraser_h + 1; // lower sleeve length
-pen_arm_usl = 3;                     // upper sleeve length
+pen_arm_usl = 3 + 9;                     // upper sleeve length
 
 
 module servo_horn() {
@@ -325,16 +312,16 @@ module pen_ring() {
 	d2 = pen_d2;
 	d2w = d2 + 2 * pen_wt;
 	lsl = pen_arm_lsl;         // lower sleeve length
-     usl = pen_arm_usl;         // upper sleeve length
+	usl = pen_arm_usl;         // upper sleeve length
 	bl = usl + d1 / 2;         // inner bullet length
-	blw = bl + pen_wt;     // outer bullet_length
+	blw = bl + pen_wt;         // outer bullet length
 
 	module bullet(d, h) {
 		intersection() {
 			hull() {
 				translate([0, 0, h - d/2])
 					sphere(d=d);
-					cylinder(d=d, h=1);
+				cylinder(d=d, h=1);
 			}
 			cylinder(d=d+1, h=h);
 		}
@@ -345,9 +332,24 @@ module pen_ring() {
 			translate([0, 0, eps])
 				cylinder(d=d2w, h=bl + lsl - eps);
 		}
-          translate([0, 0, -eps])
-              bullet(d=d1, h=bl + eps);
-          cylinder(d=d2, h=lsl + usl + d1 / 2 + eps);
+		translate([0, 0, -eps])
+			bullet(d=d1, h=bl + eps);
+		cylinder(d=d2, h=lsl + usl + d1 / 2 + eps);
+
+		// taper
+		translate([0, 0, usl])
+			cylinder(d1=d1 - eps, d2=d2 - eps, h=d1 / 2);
+
+		// slots
+		for (a = [60, 180, 300])
+			rotate(a)
+				rotate(90, [0, 1, 0])
+					hull() {
+						translate([-0.7, -1, 0])
+							cube([eps, 2, d2w]);
+						translate([-usl, 0, 0])
+							cylinder(d=2, h=d2w);
+					}
 	}
 }
 
