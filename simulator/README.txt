@@ -1,5 +1,6 @@
 This html page (bot.html) will simulate a drewbot.
 
+TODO mouse events are not working on Chrome. Works in Firefox.
 TODO add serial interface to accept commands similar to arduino.
 TODO consider allowing the user to add pen up and pen down within a recording/drawing.
 TODO the botEngine.js will need to be moved to an appropriate location for use by node on the raspberry pi.
