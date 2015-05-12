@@ -49,7 +49,7 @@ module.exports = function(grunt) {
     ngtemplates:  {
       "em-drewbot": {
         cwd: '<%= dirs.frontend.src %>',
-        src: '**.html',
+        src: '**/*.html',
         dest: 'frontend/drewbotClient-templates.js'
       }
     },

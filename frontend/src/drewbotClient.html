@@ -5,10 +5,13 @@
 	<button ng-click="lifter90()">Set Lifter To 90</button>
 		
     <input type="text" ng-model="model.customCommand" placeholder="send a custom command"/>
-    <button ng-click="sendCustomCommand()">Send</button>
-		
+    <button ng-click="sendCustomCommand()">Send</button>		
     <p>{{model.drawResponse}}</p>
-	<button ng-click="ledOn()">Turn LED On</button>
+	
+<!--	<button ng-click="ledOn()">Turn LED On</button>
 	<button ng-click="ledOff()">Turn LED Off</button>
-	<p>{{model.ledResponse}}</p>
+	<p>{{model.ledResponse}}</p>-->
+	
+	<em-simulator></em-simulator>
+	
 </div>

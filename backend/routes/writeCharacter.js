@@ -6,9 +6,10 @@ var router = express.Router();
 
 router.post('/', function(req, res) {
     
-    serialportService.writeCommand(req.body.command);
     
-    res.send('Drawing line... ' + drewbotUtils.getCurrentFormattedTime());
+    serialportService.writeCharacter(req.body.commands);
+    
+    res.send('Writing... ' + drewbotUtils.getCurrentFormattedTime());
 });
 
 module.exports = router;

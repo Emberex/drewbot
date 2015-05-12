@@ -18,9 +18,36 @@ serialPort.list(function(err, ports) {
     }
 });
 
+function getSerialPort() {
+    return port;
+}
+
+function writeCommand(command) {        
+    port.write(command, function(err, results) {
+        if(err) {
+           console.log('err ' + err); 
+        }
+        console.log('results ' + results);
+    });
+}
+
+function writeCharacter(commands) {
+    console.log(commands);
+    /* jshint ignore:start */
+    for (i = 0; i < commands.length; i++) {
+        (function(i){ 
+            setTimeout(function(){
+                var command = commands[i] + "\n";
+                console.log(command);
+                writeCommand(command);
+            }, 50 * i);
+        }(i));
+    }
+    /* jshint ignore:end */
+}
 
 module.exports = {
-	getSerialPort: function() {
-		return port;
-	}	
+	getSerialPort: getSerialPort,
+    writeCommand: writeCommand,
+    writeCharacter: writeCharacter	
 };
