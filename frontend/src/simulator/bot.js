@@ -81,8 +81,8 @@ function updatePosition(positionPoint) {
    globalLeftAngle = determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
    globalRightAngle = determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
-   addOutputText("L" + Math.floor(globalLeftAngle.degrees));
-   addOutputText("R" + Math.floor(globalRightAngle.degrees));
+   addOutputText("L" + (180 - Math.floor(globalLeftAngle.degrees)));
+   addOutputText("R" + (180 - Math.floor(globalRightAngle.degrees)));
    addOutputPositionText(positionPoint);
 
    update();
@@ -153,7 +153,7 @@ function getLeftBaseArm(angle) {
 }
 
 function getRightBaseArm(angle) {
-   var arm = new Arm(ARMLENGTH * 3, 0, angle, ARMLENGTH);
+   var arm = new Arm(ARMLENGTH * 2.25, 0, angle, ARMLENGTH);
    return arm;
 }
 

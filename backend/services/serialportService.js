@@ -49,5 +49,5 @@ function writeCharacter(commands) {
 module.exports = {
 	getSerialPort: getSerialPort,
     writeCommand: writeCommand,
-    writeCharacter: writeCharacter	
+    writeCharacter: writeCharacter
 };

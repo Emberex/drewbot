@@ -39,6 +39,7 @@ void loop() {
     
     String servoId = inputString.substring(0, 1);
     int servoPosition = inputString.substring(1, inputString.indexOf('\n')).toInt();
+    servoId.toLowerCase();
     
     if(servoId == "l") {
       Serial.println(servoId);
