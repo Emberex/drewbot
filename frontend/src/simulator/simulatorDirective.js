@@ -7,19 +7,22 @@ angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw',
 			controllerAs: 'simulator',
 			link: function(scope, elem, attrs) {
 				var canvasElement = elem.find("#canvas");
-
-				canvasElement.bind('mousemove', function (event) {
-					bot.moveToMousePos(canvas, event);
+				
+				var shouldDraw = false;
+				canvasElement.mousemove(function (event) {
+					bot.moveToMousePos(canvas, event, shouldDraw);
 				});
 
-	         	canvasElement.bind('mousedown', function (event) {
+	         	canvasElement.mousedown(function (event) {
 		            botDraw.clearOutputText();
 		            botDraw.addOutputText("PenDown");
 		            bot.clearStrokePoints();
+					shouldDraw = true;
          		});
 
-	         	canvasElement.bind('mouseup', function (event) {
+	         	canvasElement.mouseup(function (event) {					
 	            	botDraw.addOutputText("PenUp");
+					shouldDraw = false;
 	         	});
 				
 				bot.update();

@@ -1,8 +1,8 @@
 angular.module('em-drewbot').controller('DrewbotClientController', ['$scope', '$http', 
     function($scope, $http) {
         $scope.model = {
-            lineResponse: undefined,
-            customCommand: undefined
+            lineResponse: "",
+            customCommand: ""
         };
 
         $scope.left90 = function() {

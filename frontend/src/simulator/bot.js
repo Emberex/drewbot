@@ -21,12 +21,12 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       var playbackPoints = [];
       var playbackIndex;
 
-      instance.moveToMousePos = function(canvas, evt) {
+      instance.moveToMousePos = function(canvas, evt, draw) {
+         
          var rect = canvas.getBoundingClientRect();
          var point = new Point(
             evt.clientX - rect.left,
             evt.clientY - rect.top);
-         var draw = evt.buttons;
          moveToPos(point, draw);
       };
 
