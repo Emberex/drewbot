@@ -8,8 +8,8 @@
 	<div id="commandCount">
 		-
 	</div>
-	<button onclick="playback()">Playback!</button>
-	<button onclick="pretend()">Pretend!</button>
+	<button ng-click="playback()">Playback!</button>
+	<button ng-click="pretend()">Pretend!</button>
 	<button ng-click="writeCharacter()">Write Character</button>    
 	<div>
 		<textarea id="output" type="text" rows="10" cols="10" ng-model="simulator.character"></textarea>

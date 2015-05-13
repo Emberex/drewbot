@@ -1,5 +1,5 @@
-angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 
-    function($scope, $http) {
+angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot',
+    function($scope, $http, bot) {
         
         $scope.simulator = {
             character: undefined,
@@ -20,6 +20,13 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
                 $scope.simulator.response = data;
             });
         };
-        
+
+        $scope.playback = function() {
+            bot.playback();
+        };
+
+        $scope.pretend = function() {
+            bot.pretend();
+        };
     }
 ]);

@@ -63,7 +63,8 @@ module.exports = function(grunt) {
                 'angular/angular.js',
                 'angular/angular.min.js',
                 'angular/angular.min.js.map',
-                'underscore/underscore.js'
+                'underscore/underscore.js',
+                'jquery/jquery.js'
             ],
             dest: 'public/lib'
         }]
