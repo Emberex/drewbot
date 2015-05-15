@@ -8,6 +8,10 @@ function getContext() {
    return getCanvasElement().getContext("2d");
 }
 
+function eraseLine(startPos, endPos) {
+   drawGeneralLine(startPos, endPos, "#ffffff", 30);   
+}
+
 function drawLine(startPos, endPos, color) {
    drawGeneralLine(startPos, endPos, color, 10);
 }
@@ -51,16 +55,20 @@ function addTextAtPosition(text, position) {
    canvasContext.fillText(text, position.x, position.y);
 }
 
-function drawPoints(points) {
-   if (points.length === 0) {
+function applyStrokes(strokes) {
+   if (strokes.length === 0) {
       return;
    }
    var canvasContext = getContext();
    canvasContext.strokeStyle = "green";
    canvasContext.beginPath();
-   canvasContext.moveTo(points[0].x, points[0].y);
-   for (var i = 1; i < points.length; i++) {
-      canvasContext.lineTo(points[i].x, points[i].y);
+   canvasContext.moveTo(strokes[0].point.x, strokes[0].point.y);
+   for (var i = 1; i < strokes.length; i++) {
+      if (strokes[i].draw) {
+         canvasContext.lineTo(strokes[i].point.x, strokes[i].point.y); 
+      } else {
+         canvasContext.moveTo(strokes[i].point.x, strokes[i].point.y);      
+      }
    }
    canvasContext.lineWidth = 10;
    canvasContext.stroke();
