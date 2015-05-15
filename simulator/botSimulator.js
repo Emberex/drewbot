@@ -1,5 +1,9 @@
 "use strict";
-var ARMLENGTH = 200;
+
+var ARMLENGTH_MM = 50;
+
+var CANVASSCALEFACTOR = 4;
+var ARMLENGTH = ARMLENGTH_MM * CANVASSCALEFACTOR; 
 
 var globalLeftAngle;
 var globalRightAngle;
@@ -7,36 +11,64 @@ var globalRightAngle;
 var backgroundImg;
 var strokePoints = new Array();
 
-var playbackPoints = new Array();
+var playbackStrokes = new Array();
 var playbackIndex;
 
-function moveToPos(point, draw) {
-   var tempLeftAngle = determineBaseAngleFromPosition(point, getLeftBaseArm(globalLeftAngle), true);
-   var tempRightAngle = determineBaseAngleFromPosition(point, getRightBaseArm(globalRightAngle), false);
-   if (draw) {
+
+function initBot(canvasName) {
+
+   var canvasElement = document.getElementById(canvasName);
+
+   canvasElement.addEventListener('mousemove', function (evt) {
+      moveToMousePos(canvas, evt);
+   }, false);
+
+   canvasElement.addEventListener('mousedown', function (evt) {
+      clearOutputText();
+      addOutputText("PenDown");
+      strokePoints = new Array();
+   }, false);
+
+   canvasElement.addEventListener('mouseup', function (evt) {
+      addOutputText("PenUp");
+   }, false);
+
+   // Arbitrary init position
+   globalLeftAngle = new Angle(125, true);
+   globalRightAngle = new Angle(75, true);
+
+   backgroundImg = new Image();
+   backgroundImg.src = "paper.jpg";
+}
+
+
+function moveToPos(stroke) {
+   var tempLeftAngle = determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
+   var tempRightAngle = determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+   if (stroke.draw) {
       // Only draw the point if it's within drawing distance of the bases,
       // TODO and it doesn't cause the arms to buckle inward 
       if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
-         updatePosition(point);
-         strokePoints.push(point);
-         drawCircle(point, 15);
+         updatePosition(stroke.point);
+         strokePoints.push(stroke);
+         drawCircle(stroke.point, 15);
       } else {
          update();
       }
    } else {
       update();
    }
-   addTextAtPosition("  (" + point.x + "," + point.y + ")", point);
+   addTextAtPosition("  (" + stroke.point.x + "," + stroke.point.y + ")", stroke.point);
 
 }
 
 function moveToMousePos(canvas, evt) {
    var rect = canvas.getBoundingClientRect();
-   var point = new Point(
+   var stroke = new Stroke(
       evt.clientX - rect.left,
-      evt.clientY - rect.top);
-   var draw = evt.buttons;
-   moveToPos(point, draw);
+      evt.clientY - rect.top,
+      evt.buttons);
+   moveToPos(stroke);
 }
 
 
@@ -63,11 +95,15 @@ function updatePosition(positionPoint) {
    globalLeftAngle = determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
    globalRightAngle = determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
-   addOutputText("L" + Math.floor(globalLeftAngle.degrees));
-   addOutputText("R" + Math.floor(globalRightAngle.degrees));
+   addOutputAngleText();
    addOutputPositionText(positionPoint);
 
    update();
+}
+
+function addOutputAngleText() {
+   addOutputText("L" + Math.floor(globalLeftAngle.degrees));
+   addOutputText("R" + Math.floor(globalRightAngle.degrees));   
 }
 
 
@@ -120,7 +156,7 @@ function draw(baseLeft, baseRight) {
    drawLine(rightEndPoint, connectionPoint, "#ff0000");
    
    // If we're in drawing mode, draw the current set of points
-   drawPoints(strokePoints);
+   applyStrokes(strokePoints);
 
    // Add some text to help with debugging
    addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", connectionPoint);
@@ -129,57 +165,23 @@ function draw(baseLeft, baseRight) {
 
 }
 
-function getLeftBaseArm(angle) {
-   var arm = new Arm(ARMLENGTH * 2, 0, angle, ARMLENGTH);
-   return arm;
-}
-
-function getRightBaseArm(angle) {
-   var arm = new Arm(ARMLENGTH * 3, 0, angle, ARMLENGTH);
-   return arm;
-}
-
-
-function initBot(canvasName) {
-
-   var canvasElement = document.getElementById(canvasName);
-
-   canvasElement.addEventListener('mousemove', function (evt) {
-      moveToMousePos(canvas, evt);
-   }, false);
-
-   canvasElement.addEventListener('mousedown', function (evt) {
-      clearOutputText();
-      addOutputText("PenDown");
-      strokePoints = new Array();
-   }, false);
-
-   canvasElement.addEventListener('mouseup', function (evt) {
-      addOutputText("PenUp");
-   }, false);
-
-   // Arbitrary init position
-   globalLeftAngle = new Angle(125, true);
-   globalRightAngle = new Angle(75, true);
-
-   backgroundImg = new Image();
-   backgroundImg.src = "paper.jpg";
-}
-
 function onePlaybackStep() {
 
-   var point = playbackPoints[playbackIndex++];
-   strokePoints.push(point);
+   var stroke = playbackStrokes[playbackIndex++];
+   strokePoints.push(stroke);
 
    // Remove repeated points.
-//   if (playbackIndex > 0 && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x) {
-//      if (playbackIndex < playbackPoints.length) {
-//         setTimeout(onePlaybackStep, 30);
-//      }
-//   }
+   //   if (playbackIndex > 0 && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x) {
+   //      if (playbackIndex < playbackPoints.length) {
+   //         setTimeout(onePlaybackStep, 30);
+   //      }
+   //   }
 
-   globalLeftAngle = determineBaseAngleFromPosition(point, getLeftBaseArm(globalLeftAngle), true);
-   globalRightAngle = determineBaseAngleFromPosition(point, getRightBaseArm(globalRightAngle), false);
+   globalLeftAngle = determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
+   globalRightAngle = determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+   
+//   addOutputAngleText();
+//   addOutputPositionText(point);
 
    var leftBaseArm = getLeftBaseArm(globalLeftAngle);
    var rightBaseArm = getRightBaseArm(globalRightAngle);
@@ -199,42 +201,14 @@ function onePlaybackStep() {
    drawLine(leftEndPoint, connectionPoint, "#0000ff");
    drawLine(rightEndPoint, connectionPoint, "#ff0000");
 
-   addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", point);
+   addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", stroke.point);
 
-   drawPoints(strokePoints);
+   applyStrokes(strokePoints);
 
-   if (playbackIndex < playbackPoints.length) {
-      setTimeout(onePlaybackStep, 30);
+   if (playbackIndex < playbackStrokes.length) {
+      setTimeout(onePlaybackStep, 300);
    }
 }
 
 
-function playback() {
 
-   var json = '{ "data": [' + document.getElementById("outputPosition").value + "0]}";
-   var points = JSON.parse(json);
-
-   strokePoints = new Array();
-   playbackPoints = points.data;
-   playbackIndex = 0;
-
-   onePlaybackStep();
-
-}
-
-function pretend() {
-   
-   strokePoints = new Array();
-   var shiftedChar2 = new Array();
-   // Shift the second digit to the right
-   for (var i=0;i<botChar2.data.length;i++) {
-      var point = new Point(botChar2.data[i].x + 55, botChar2.data[i].y);
-      shiftedChar2.push(point); 
-   }
-   playbackPoints = botChar1.data;
-   playbackPoints = botChar1.data.concat(shiftedChar2);
-   
-   playbackIndex = 0;
-
-   onePlaybackStep();
-}

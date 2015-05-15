@@ -1,8 +1,7 @@
 "use strict";
 
-function determineBaseAngleFromPosition(pos, baseArm, isLeft) {
-
-   var points = circleIntersectionPoints(baseArm.point, baseArm.length, pos, ARMLENGTH);
+function determineBaseAngleFromPosition(point, baseArm, isLeft) {
+   var points = circleIntersectionPoints(baseArm.point, baseArm.length, point, ARMLENGTH);
    // Use the correct intersection point
    var x;
    var y;

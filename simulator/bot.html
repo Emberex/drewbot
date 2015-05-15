@@ -10,7 +10,10 @@
    <script type="text/javascript" src="botEngine.js"></script>
    <script type="text/javascript" src="botUtils.js"></script>
    <script type="text/javascript" src="botDraw.js"></script>
-   <script type="text/javascript" src="bot.js"></script>
+   <script type="text/javascript" src="botHandlers.js"></script>
+   <script type="text/javascript" src="botDigitalClock.js"></script>
+   <script type="text/javascript" src="botSimulator.js"></script>
+   <script type="text/javascript" src="botCharGenerator.js"></script>
 
 </head>
 
@@ -25,8 +28,13 @@
    <div id="commandCount">
       -
    </div>
+   <div>
+   <button onclick="whatTimeIsIt()">What time is it?</button>
    <button onclick="playback()">Playback!</button>
-   <button onclick="pretend()">Pretend!</button>   <div>
+   <button onclick="doMessage()">Play Message!</button>
+   <input id="message" onkeypress="messageKeypress(event)" ></input>
+   </div>
+   <div>
       <textarea id="output" type="text" rows="10" cols="10" ></textarea>
       <textarea id="outputPosition" type="text" rows="10" cols="20" ></textarea>
    </div>
