@@ -1,5 +1,5 @@
-angular.module('em-drewbot').factory('botDraw', [ 
-   function() {
+angular.module('em-drewbot').factory('botDigitalClock', ['botCharGenerator', 
+   function(botCharGenerator) {
 
       var instance = {};
       
@@ -21,8 +21,8 @@ angular.module('em-drewbot').factory('botDraw', [
       
          var timeString = hours + ":" + minutes;
        
-         return convertToStrokes(timeString);
-      }
+         return botCharGenerator.convertToStrokes(timeString);
+      };
       
       return instance;
 

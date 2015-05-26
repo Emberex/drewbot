@@ -1,9 +1,9 @@
 angular.module('em-drewbot').constant("simulatorConstants", {
     ARMLENGTH: 200,
     SKEWFACTOR: 0.05,
-    segmentLength: this.ARMLENGTH / 8,
+    SEGMENTLENGTH: this.ARMLENGTH / 8,
     
-    DIGITOFFSET: this.segmentLength * 1.5,
+    DIGITOFFSET: this.SEGMENTLENGTH * 1.5,
     FIRSTCHARX: this.ARMLENGTH * 1.4,
     
     // the line segments are defined as.
