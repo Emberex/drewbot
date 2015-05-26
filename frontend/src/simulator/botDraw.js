@@ -1,18 +1,19 @@
-angular.module('em-drewbot').factory('botDraw', [ 
+/// <reference path="../../../typings/angularjs/angular.d.ts"/>
+angular.module('em-drewbot').factory('botDraw', [
    function() {
 
       var instance = {};
 
       instance.clearOutputText = function() {
-         var elem = document.getElementById("output"); // jshint ignore:line
+         var elem = document.getElementById("output");
          elem.value = "";   
-         elem = document.getElementById("outputPosition"); // jshint ignore:line
+         elem = document.getElementById("outputPosition");
          elem.value = "";
          updateCommandCount();
       };
 
       instance.addOutputText = function(str) {
-         var elem = document.getElementById("output"); // jshint ignore:line
+         var elem = document.getElementById("output");
          elem.value = elem.value + str + '\n';
          elem.scrollTop = elem.scrollHeight;
          updateCommandCount();   
@@ -66,7 +67,7 @@ angular.module('em-drewbot').factory('botDraw', [
       };
 
       instance.addOutputPositionText = function(point) {
-         var elem = document.getElementById("outputPosition"); // jshint ignore:line
+         var elem = document.getElementById("outputPosition");
          elem.value = elem.value + '{ "x": ' + Math.floor(point.x) + ', "y": ' + Math.floor(point.y) + ' },\n';
          elem.scrollTop = elem.scrollHeight;
          updateCommandCount();   
@@ -80,15 +81,31 @@ angular.module('em-drewbot').factory('botDraw', [
          canvasContext.strokeStyle = '#003300';
          canvasContext.stroke();
       };
+      
+      instance.applyStrokes = function(strokes) {
+         if (strokes.length === 0) {
+            return;
+         }
+         var canvasContext = instance.getContext();
+         canvasContext.strokeStyle = "green";
+         canvasContext.beginPath();
+         canvasContext.moveTo(strokes[0].point.x, strokes[0].point.y);
+         for (var i = 1; i < strokes.length; i++) {
+            if (strokes[i].draw) {
+               canvasContext.lineTo(strokes[i].point.x, strokes[i].point.y); 
+            } else {
+               canvasContext.moveTo(strokes[i].point.x, strokes[i].point.y);      
+            }
+         }
+         canvasContext.lineWidth = 10;
+         canvasContext.stroke();
+         canvasContext.closePath();
+      };
 
       function getCanvasElement() {
-         return document.getElementById("canvas"); // jshint ignore:line
-      }      
-
-      function drawThinLine(startPos, endPos, color) {
-         drawGeneralLine(startPos, endPos, color, 1);
+         return document.getElementById("canvas");
       }
-
+      
       function drawGeneralLine(startPos, endPos, color, width) {
          var canvasContext = instance.getContext();
          canvasContext.strokeStyle = color;
@@ -101,11 +118,11 @@ angular.module('em-drewbot').factory('botDraw', [
       }
 
       function updateCommandCount() {
-         var elem = document.getElementById("commandCount"); // jshint ignore:line
-         var outputElem = document.getElementById("output"); // jshint ignore:line
+         var elem = document.getElementById("commandCount");
+         var outputElem = document.getElementById("output");
          elem.innerHTML = outputElem.value.split("\n").length - 1;
       }
-
+      
       return instance;
    }]
 );
