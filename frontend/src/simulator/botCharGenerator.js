@@ -1,35 +1,3 @@
-var SKEWFACTOR = 0.05;
-var segmentLength = ARMLENGTH / 8;
-
-var DIGITOFFSET = segmentLength * 1.5;
-var FIRSTCHARX = ARMLENGTH * 1.4;
-
-// the line segments are defined as.
-// 1 is the top line, 2 is center line, 3 is the bottom line
-// 4 is top left, 5 is top right
-// 6 is bottom left, 7 is bottom right
-// 8 indicates a colon character
-// 10 is upper left to middle, 11 is upper right to middle
-// 12 is lower left to middle, 13 is lower right to middle
-// 14 is top center, 15 is lower center
-// 16 is lower middle to left, 17 is lower middle to right
-var TOPLINESEGMENT = 1;
-var CENTERLINESEGMENT = 2;
-var BOTTOMLINESEGMENT = 3;
-var TOPLEFTSEGMENT = 4;
-var TOPRIGHTSEGMENT = 5;
-var BOTTOMLEFTSEGMENT = 6;
-var BOTTOMRIGHTSEGMENT = 7;
-var COLONSEGMENT = 8;
-var XTOPLEFTSEGMENT = 10;
-var XTOPRIGHTSEGMENT = 11;
-var XBOTTOMLEFTSEGMENT = 12;
-var XBOTTOMRIGHTSEGMENT = 13;
-var TOPCENTERSEGMENT = 14;
-var BOTTOMCENTERSEGMENT = 15;
-var VBOTTOMLEFTSEGMENT = 16;
-var VBOTTOMRIGHTSEGMENT = 17;
-
 
 function convertToStrokes(str) {
    var offsetX = FIRSTCHARX;;
