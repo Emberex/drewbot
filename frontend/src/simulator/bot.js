@@ -5,8 +5,8 @@
 /* global addOutputPositionText */
 /* global Point */
 
-angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 'botDraw',
-   function(botEngine, simulatorConstants, botDraw) {
+angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 'botDraw', 'botDigitalClock', 'botCharGenerator',
+   function(botEngine, simulatorConstants, botDraw, botDigitalClock, botCharGenerator) {
 
       var instance = {};
 
@@ -18,16 +18,16 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       
       var strokePoints = [];
 
-      var playbackPoints = [];
+      var playbackStrokes = [];
       var playbackIndex;
 
-      instance.moveToMousePos = function(canvas, evt, draw) {
-         
+      instance.moveToMousePos = function moveToMousePos(canvas, evt, draw) {
          var rect = canvas.getBoundingClientRect();
-         var point = new Point(
+         var stroke = new Stroke(
             evt.clientX - rect.left,
-            evt.clientY - rect.top);
-         moveToPos(point, draw);
+            evt.clientY - rect.top,
+            draw);
+         moveToPos(stroke);
       };
 
       instance.clearStrokePoints = function() {
@@ -44,23 +44,23 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          draw(leftBaseArm, rightBaseArm);
       };
 
-      function moveToPos(point, draw) {
-         var tempLeftAngle = botEngine.determineBaseAngleFromPosition(point, getLeftBaseArm(globalLeftAngle), true);
-         var tempRightAngle = botEngine.determineBaseAngleFromPosition(point, getRightBaseArm(globalRightAngle), false);
-         if (draw) {
+      function moveToPos(stroke) {
+         var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
+         var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+         if (stroke.draw) {
             // Only draw the point if it's within drawing distance of the bases,
             // TODO and it doesn't cause the arms to buckle inward 
             if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
-               updatePosition(point);
-               strokePoints.push(point);
-               botDraw.drawCircle(point, 15);
+               updatePosition(stroke.point);
+               strokePoints.push(stroke);
+               botDraw.drawCircle(stroke.point, 15);
             } else {
                instance.update();
             }
          } else {
             instance.update();
          }
-         botDraw.addTextAtPosition("  (" + point.x + "," + point.y + ")", point);
+         botDraw.addTextAtPosition("  (" + stroke.point.x + "," + stroke.point.y + ")", stroke.point);
       }
 
       function updatePosition(positionPoint) {
@@ -75,11 +75,15 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
          globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
-         botDraw.addOutputText("L" + (180 - Math.floor(globalLeftAngle.degrees)));
-         botDraw.addOutputText("R" + (180 - Math.floor(globalRightAngle.degrees)));
+         addOutputAngleText(globalLeftAngle, globalRightAngle);
          botDraw.addOutputPositionText(positionPoint);
 
          instance.update();
+      }
+      
+      function addOutputAngleText(leftAngle, rightAngle) {
+         botDraw.addOutputText("L" + (180 - Math.floor(leftAngle.degrees)));
+         botDraw.addOutputText("R" + (180 - Math.floor(rightAngle.degrees)));   
       }
 
       function servoEndPoint(arm) {
@@ -107,15 +111,14 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          return connectionPoint;
       }
 
-      function draw(baseLeft, baseRight) {
-         
+      function draw(baseLeft, baseRight) {   
+               
          // Add background image to canvas
-
          botDraw.getContext().drawImage(backgroundImg, 0, -120); 
          
          // Add box for char size
          botDraw.drawCharOutline({ "x": baseLeft.point.x, "y": simulatorConstants.ARMLENGTH * 0.9 }, simulatorConstants.ARMLENGTH * 0.5, simulatorConstants.ARMLENGTH * 0.5);
-
+debugger; // jshint ignore:line
          var leftEndPoint = servoEndPoint(baseLeft);
          var rightEndPoint = servoEndPoint(baseRight);
 
@@ -130,13 +133,12 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          botDraw.drawLine(rightEndPoint, connectionPoint, "#ff0000");
          
          // If we're in drawing mode, draw the current set of points
-         botDraw.drawPoints(strokePoints);
+         botDraw.applyStrokes(strokePoints);
 
          // Add some text to help with debugging
          botDraw.addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", connectionPoint);
          botDraw.addTextAtPosition("  Left(" + Math.floor(baseLeft.angle.degrees) + "\u00B0)", baseLeft.point);
          botDraw.addTextAtPosition("  Right(" + Math.floor(baseRight.angle.degrees) + "\u00B0)", baseRight.point);
-
       }
 
       function getLeftBaseArm(angle) {
@@ -151,12 +153,12 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
       function onePlaybackStep() {
 
-         var point = playbackPoints[playbackIndex++];
+         var point = playbackStrokes[playbackIndex++];
          strokePoints.push(point);
 
          // Remove repeated points.
-      //   if (playbackIndex > 0 && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x && playbackPoints[playbackIndex].x == playbackPoints[playbackIndex].x) {
-      //      if (playbackIndex < playbackPoints.length) {
+      //   if (playbackIndex > 0 && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x) {
+      //      if (playbackIndex < playbackStrokes.length) {
       //         setTimeout(onePlaybackStep, 30);
       //      }
       //   }
@@ -184,39 +186,48 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          botDraw.addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", point);
 
-         botDraw.drawPoints(strokePoints);
+         botDraw.applyStrokes(strokePoints);
 
-         if (playbackIndex < playbackPoints.length) {
+         if (playbackIndex < playbackStrokes.length) {
             setTimeout(onePlaybackStep, 30); // jshint ignore:line
          }
       }
 
       instance.playback = function() {
 
-         var json = '{ "data": [' + document.getElementById("outputPosition").value + "0]}"; // jshint ignore:line
+         var json = '{ "data": [' + document.getElementById("outputPosition").value + "0]}";
          var points = JSON.parse(json);
-
+         
+         for (var i = 0; i<points.data.length;i++) {
+            playbackStrokes.push( new Stroke(points.data[i].x, points.data[i].y, true));
+         }
+         
          strokePoints = [];
-         playbackPoints = points.data;
          playbackIndex = 0;
-
+         
          onePlaybackStep();
       };
+      
+      instance.whatTimeIsIt = function() {
 
-      instance.pretend = function() {
-         
-         strokePoints = [];
-         var shiftedChar2 = [];
-         // Shift the second digit to the right
-         for (var i=0;i<botChar2.data.length;i++) {
-            var point = new Point(botChar2.data[i].x + 55, botChar2.data[i].y);
-            shiftedChar2.push(point); 
-         }
-         playbackPoints = botChar1.data;
-         playbackPoints = botChar1.data.concat(shiftedChar2);
-         
+         playbackStrokes = botDigitalClock.getTimeAsStrokes();
+         console.log(playbackStrokes);
+         strokePoints = []; // reset
+         playbackStrokes.push(new Stroke(310,190,false));
          playbackIndex = 0;
+         onePlaybackStep();
+         
+         setTimeout(instance.whatTimeIsIt, 20000);
+      };
+      
+      instance.doMessage = function() {
 
+         playbackStrokes = botCharGenerator.convertToStrokes(document.getElementById("message").value);
+         console.log(playbackStrokes);
+         strokePoints = []; // reset
+         playbackStrokes.push( new Stroke(310,190,false));
+         playbackIndex = 0;
+         
          onePlaybackStep();
       };
 

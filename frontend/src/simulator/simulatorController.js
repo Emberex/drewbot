@@ -24,9 +24,19 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
         $scope.playback = function() {
             bot.playback();
         };
-
-        $scope.pretend = function() {
-            bot.pretend();
+        
+        $scope.messageKeypress = function(event) {
+           if (event.keyCode == 13) {
+              bot.doMessage();
+           }
+        };
+        
+        $scope.doMessage = function() {
+            bot.doMessage();
+        };
+        
+        $scope.whatTimeIsIt = function() {
+            bot.whatTimeIsIt();
         };
     }
 ]);

@@ -12,7 +12,7 @@
 	<button ng-click="playback()">Playback!</button>
 	<button ng-click="writeCharacter()">Write Character</button>		
 		
-   	<input id="message" onkeypress="messageKeypress(event)" ></input>
+   	<input id="message" ng-keypress="messageKeypress($event)" ></input>
 	<button ng-click="doMessage()">Play Message!</button>
 	<div>
 		<textarea id="output" type="text" rows="10" cols="10" ng-model="simulator.character"></textarea>

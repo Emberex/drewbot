@@ -132,7 +132,6 @@ function positionOfConnection(point1, p1Length, point2, p2Length) {
    return connectionPoint;
 }
 
-
 function draw(baseLeft, baseRight) {
    
    // Add background image to canvas
