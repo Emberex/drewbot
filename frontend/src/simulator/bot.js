@@ -118,7 +118,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          
          // Add box for char size
          botDraw.drawCharOutline({ "x": baseLeft.point.x, "y": simulatorConstants.ARMLENGTH * 0.9 }, simulatorConstants.ARMLENGTH * 0.5, simulatorConstants.ARMLENGTH * 0.5);
-debugger; // jshint ignore:line
+
          var leftEndPoint = servoEndPoint(baseLeft);
          var rightEndPoint = servoEndPoint(baseRight);
 

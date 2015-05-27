@@ -41,7 +41,6 @@ angular.module('em-drewbot').factory('botCharGenerator', ['simulatorConstants',
       
          for (var c = 0; c < str.length; c++) {
             var segs = charToSegments(str[c]);
-            debugger; // jshint ignore:line
             var pointOffset = new Point(offsetX, simulatorConstants.ARMLENGTH);
             var tempPoints = getSegmentStrokes(segs, pointOffset);
             strokes = strokes.concat(tempPoints);
