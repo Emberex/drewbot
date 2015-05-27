@@ -71,7 +71,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          if (isNaN(xPos) || isNaN(yPos)) {
             return;
          }
-
+   	  
          globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
          globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
@@ -82,6 +82,8 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       }
       
       function addOutputAngleText(leftAngle, rightAngle) {
+         console.log("leftAngle: ", leftAngle);
+         console.log("rightAngle: ", rightAngle);
          botDraw.addOutputText("L" + (180 - Math.floor(leftAngle.degrees)));
          botDraw.addOutputText("R" + (180 - Math.floor(rightAngle.degrees)));   
       }
@@ -153,8 +155,8 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
       function onePlaybackStep() {
 
-         var point = playbackStrokes[playbackIndex++];
-         strokePoints.push(point);
+         var stroke = playbackStrokes[playbackIndex++];
+         strokePoints.push(stroke);
 
          // Remove repeated points.
       //   if (playbackIndex > 0 && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x) {
@@ -163,8 +165,9 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       //      }
       //   }
 
-         globalLeftAngle = botEngine.determineBaseAngleFromPosition(point, getLeftBaseArm(globalLeftAngle), true);
-         globalRightAngle = botEngine.determineBaseAngleFromPosition(point, getRightBaseArm(globalRightAngle), false);
+         //debugger; //jshint ignore:line
+         globalLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
+         globalRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
 
          var leftBaseArm = getLeftBaseArm(globalLeftAngle);
          var rightBaseArm = getRightBaseArm(globalRightAngle);
@@ -184,12 +187,18 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          botDraw.drawLine(leftEndPoint, connectionPoint, "#0000ff");
          botDraw.drawLine(rightEndPoint, connectionPoint, "#ff0000");
 
-         botDraw.addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", point);
+         botDraw.addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", stroke.point);
+//         if (playbackStrokes[playbackIndex-1].draw) {
+//            addOutputText("I$DOWN$");
+//         } else {
+//            addOutputText("I$UP$");
+//         }
+         addOutputAngleText(globalLeftAngle, globalRightAngle);
 
          botDraw.applyStrokes(strokePoints);
 
          if (playbackIndex < playbackStrokes.length) {
-            setTimeout(onePlaybackStep, 30); // jshint ignore:line
+            setTimeout(onePlaybackStep, 100); // jshint ignore:line
          }
       }
 
@@ -217,7 +226,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          playbackIndex = 0;
          onePlaybackStep();
          
-         setTimeout(instance.whatTimeIsIt, 20000);
+         //setTimeout(instance.whatTimeIsIt, 20000);
       };
       
       instance.doMessage = function() {
