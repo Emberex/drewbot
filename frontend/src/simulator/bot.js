@@ -96,7 +96,6 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          return new Point(x, y);
       }
 
-
       function positionOfConnection(point1, p1Length, point2, p2Length) {
 
          var intersectionPoints = botEngine.circleIntersectionPoints(point1, p1Length, point2, p2Length);
@@ -193,6 +192,12 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 //         } else {
 //            addOutputText("I$UP$");
 //         }
+         if(stroke.draw) {
+            botDraw.addOutputText("i102");
+         } else {
+            botDraw.addOutputText("i90");
+         }
+
          addOutputAngleText(globalLeftAngle, globalRightAngle);
 
          botDraw.applyStrokes(strokePoints);

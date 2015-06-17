@@ -4,7 +4,7 @@ angular.module('em-drewbot').factory('botCharGenerator', ['simulatorConstants',
       var instance = {};
       
       var SKEWFACTOR = 0.05;
-      var segmentLength = simulatorConstants.ARMLENGTH / 8;
+      var segmentLength = simulatorConstants.ARMLENGTH / 4;
       
       var DIGITOFFSET = segmentLength * 1.5;
       var FIRSTCHARX = simulatorConstants.ARMLENGTH * 1.4;
