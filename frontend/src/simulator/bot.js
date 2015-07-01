@@ -187,11 +187,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          botDraw.drawLine(rightEndPoint, connectionPoint, "#ff0000");
 
          botDraw.addTextAtPosition("  (" + Math.floor(connectionPoint.x) + "," + Math.floor(connectionPoint.y) + ")", stroke.point);
-//         if (playbackStrokes[playbackIndex-1].draw) {
-//            addOutputText("I$DOWN$");
-//         } else {
-//            addOutputText("I$UP$");
-//         }
+
          if(stroke.draw) {
             botDraw.addOutputText("i102");
          } else {

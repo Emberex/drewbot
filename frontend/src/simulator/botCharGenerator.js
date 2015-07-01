@@ -7,7 +7,7 @@ angular.module('em-drewbot').factory('botCharGenerator', ['simulatorConstants',
       var segmentLength = simulatorConstants.ARMLENGTH / 4;
       
       var DIGITOFFSET = segmentLength * 1.5;
-      var FIRSTCHARX = simulatorConstants.ARMLENGTH * 1.4;
+      var FIRSTCHARX = -2 * DIGITOFFSET;
       
       // the line segments are defined as.
       // 1 is the top line, 2 is center line, 3 is the bottom line
@@ -40,10 +40,14 @@ angular.module('em-drewbot').factory('botCharGenerator', ['simulatorConstants',
          var strokes = [];
       
          for (var c = 0; c < str.length; c++) {
-            var segs = charToSegments(str[c]);
-            var pointOffset = new Point(offsetX, simulatorConstants.ARMLENGTH);
-            var tempPoints = getSegmentStrokes(segs, pointOffset);
-            strokes = strokes.concat(tempPoints);
+            console.log(handFont);
+            console.log("str[c]: ", str[c]);
+            var currentChar = handFont[str[c]];
+            
+            for (var cc = 0; cc < currentChar.length; cc++ ) {
+               strokes.push(new Stroke(currentChar[cc].x + offsetX, currentChar[cc].y, cc !== 0));
+            }
+            strokes.push(new Stroke(currentChar[cc-1].x + offsetX, currentChar[cc-1].y, false));
             offsetX += DIGITOFFSET;
          }
       
