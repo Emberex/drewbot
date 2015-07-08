@@ -32,6 +32,14 @@ angular.module('em-drewbot').controller('DrewbotClientController', ['$scope', '$
             });
         };
         
+        $scope.sendStrokes = function() {
+            $http.post('/drawStrokes', {strokes: handFont["1"]}).success(function(data, status, headers, config) {
+                $scope.model.commandResponse = data;
+            }).error(function(data, status, headers, config) {
+                $scope.model.commandResponse = data;
+            });
+        };
+        
         function sendCommand(command) {
             $http.post('/command', {command: command}).success(function(data, status, headers, config) {
                 $scope.model.commandResponse = data;

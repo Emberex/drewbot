@@ -31,7 +31,7 @@ function writeCommand(command) {
     });
 }
 
-function writeCharacter(commands) {
+function writeCommands(commands) {
     console.log(commands);
     /* jshint ignore:start */
     for (var i = 0; i < commands.length;) {
@@ -63,6 +63,6 @@ function writeCharacter(commands) {
 
 module.exports = {
     writeCommand: writeCommand,
-    writeCharacter: writeCharacter,
+    writeCommands: writeCommands,
     connect: connect
 };

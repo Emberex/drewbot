@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var command = require('./routes/command');
 var connectArduino = require('./routes/connectArduino');
 var writeCharacter = require('./routes/writeCharacter');
+var drawStrokes = require('./routes/drawStrokes');
 
 var app = express();
 
@@ -28,6 +29,8 @@ app.use('/', routes);
 app.use('/command', command);
 app.use('/writeCharacter', writeCharacter);
 app.use('/connectArduino', connectArduino);
+app.use('/drawStrokes', drawStrokes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
