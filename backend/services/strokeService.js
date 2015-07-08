@@ -10,7 +10,6 @@ function getCommands(strokes) {
     strokes.forEach(function(stroke, index, array) {
         commands = commands.concat(getCommand(stroke));
     });
-    console.log(commands);
     return commands;
 }
 
@@ -33,7 +32,7 @@ function getCommand(stroke) {
 
 function determineBaseAngleFromPosition(strokePoint, baseArm, isLeft) {
 
-    var points = circleIntersectionPoints(baseArm.point, baseArm.length, strokePoint, ARM_LENGTH); // jshint ignore:line
+    var points = circleIntersectionPoints(baseArm.point, baseArm.length, strokePoint, ARM_LENGTH);
     // Use the correct intersection point
     var x;
     var y;
@@ -52,9 +51,9 @@ function determineBaseAngleFromPosition(strokePoint, baseArm, isLeft) {
     
     var result;
     if (x <= baseArm.point.x) {
-        result = new Angle(Math.PI - Math.asin(y / baseArm.length), false); // jshint ignore:line
+        result = new Angle(Math.PI - Math.asin(y / baseArm.length), false);
     } else {
-        result = new Angle(Math.asin(y / baseArm.length), false); // jshint ignore:line
+        result = new Angle(Math.asin(y / baseArm.length), false);
     }
     return result;
 }
@@ -82,20 +81,26 @@ function circleIntersectionPoints(p1, p1Length, p2, p2Length) {
     var y1 = yBase - 2 * (c - a) * delta / (D * D);
     var y2 = yBase + 2 * (c - a) * delta / (D * D);
     
-    connectionPoints[0] = new Point(x1, y1); // jshint ignore:line
-    connectionPoints[1] = new Point(x2, y2); // jshint ignore:line
+    connectionPoints[0] = new Point(x1, y1);
+    connectionPoints[1] = new Point(x2, y2);
     
     return connectionPoints;
 }
 
 function getLeftBaseArm(angle) {
-    var arm = new Arm(ARM_LENGTH * 2, 0, angle, ARM_LENGTH);
-    return arm;
+    return new Arm(ARM_LENGTH * 2, 0, angle, ARM_LENGTH);
 }
 
 function getRightBaseArm(angle) {
-    var arm = new Arm(ARM_LENGTH * 2.25, 0, angle, ARM_LENGTH);
-    return arm;
+    return new Arm(ARM_LENGTH * 2.25, 0, angle, ARM_LENGTH);
+}
+
+function deg2Rad(angle) {
+    return angle * (Math.PI / 180.0);
+}
+
+function rad2Deg(angle) {
+   return angle * (180.0 / Math.PI);
 }
 
 function Point(x, y) {
@@ -104,21 +109,13 @@ function Point(x, y) {
 }
 
 function Angle(value, isDegrees) {
-   if (isDegrees) {
-      this.degrees = value;
-      this.radians = deg2Rad(value);
-   } else {
-      this.radians = value;
-      this.degrees = rad2Deg(value);
-   }
-}
-
-function deg2Rad(angle) {
-   return angle * (Math.PI / 180.0);
-}
-
-function rad2Deg(angle) {
-   return angle * (180.0 / Math.PI);
+    if (isDegrees) {
+        this.degrees = value;
+        this.radians = deg2Rad(value);
+    } else {
+        this.radians = value;
+        this.degrees = rad2Deg(value);
+    }
 }
 
 function Arm(x, y, angle, length) {
