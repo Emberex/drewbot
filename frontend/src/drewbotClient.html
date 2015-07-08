@@ -1,16 +1,19 @@
 <div>
-	<h1>Welcome!!</h1>
-	<button ng-click="left90()">Set Left To 90</button>
-	<button ng-click="right90()">Set Right To 90</button>
-	<button ng-click="lifter90()">Set Lifter To 90</button>
-		
-    <input type="text" ng-model="model.customCommand" placeholder="send a custom command"/>
-    <button ng-click="sendCustomCommand()">Send</button>		
-    <p>{{model.drawResponse}}</p>
-	
-<!--	<button ng-click="ledOn()">Turn LED On</button>
-	<button ng-click="ledOff()">Turn LED Off</button>
-	<p>{{model.ledResponse}}</p>-->
+	<div class="controls">
+		<div class="calibration"> 
+			<button ng-click="left90()">Set Left To 90 -- 'l90'</button>
+			<button ng-click="right90()">Set Right To 90 -- 'r90'</button>
+			<button ng-click="lifter90()">Set Lifter To 90 -- 'i90'</button>
+		</div>
+		<div class="test">	
+		    <input type="text" ng-model="model.customCommand" placeholder="send a custom command"/>
+		    <button ng-click="sendCustomCommand()">Send</button>
+		</div>
+		<div>
+			<button ng-click="connectArduino()">Connect Arduino</button>
+		</div>		
+		<p>{{model.commandResponse}}</p>
+	</div>
 	
 	<em-simulator></em-simulator>
 	

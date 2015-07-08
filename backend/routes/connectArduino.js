@@ -6,9 +6,9 @@ var router = express.Router();
 
 router.post('/', function(req, res) {
     
-    serialportService.writeCommand(req.body.command);
+    serialportService.connect();
     
-    res.send('Drawing line... ' + drewbotUtils.getCurrentFormattedTime());
+    res.send('Connecting arduino... ' + drewbotUtils.getCurrentFormattedTime());
 });
 
 module.exports = router;

@@ -6,9 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var draw = require('./routes/draw');
+var command = require('./routes/command');
+var connectArduino = require('./routes/connectArduino');
 var writeCharacter = require('./routes/writeCharacter');
-var led = require('./routes/led');
 
 var app = express();
 
@@ -25,9 +25,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', routes);
-app.use('/draw', draw);
+app.use('/command', command);
 app.use('/writeCharacter', writeCharacter);
-app.use('/led', led);
+app.use('/connectArduino', connectArduino);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
