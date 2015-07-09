@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+
+#commandsContainer {
+    padding: 10px;
+    float: left;
+}
+
+#strokesContainer {
+    padding: 10px;
+}

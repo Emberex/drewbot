@@ -1,5 +1,5 @@
-angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw',
-	function(bot, botDraw) {
+angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw', 'simulatorDataService',
+	function(bot, botDraw, simulatorDataService) {
 		return {
 			scope: {},
 			templateUrl: 'simulator/simulator.html',
@@ -14,7 +14,7 @@ angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw',
 				});
 
 	         	canvasElement.mousedown(function (event) {
-		            botDraw.clearOutputText();
+		            simulatorDataService.clearModel();
 		            bot.clearStrokePoints();
 					shouldDraw = true;
          		});

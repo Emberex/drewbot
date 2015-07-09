@@ -2,20 +2,31 @@
 	<div>
 		<canvas id="canvas" width="800px" height="400px"></canvas>
 	</div>
-	<div>
-		Bot Commands
-	</div>
-	<div id="commandCount">
-		-
-	</div>
-	<button ng-click="whatTimeIsIt()">What time is it?</button>
-	<button ng-click="playback()">Playback!</button>
-	<button ng-click="sendCommands()">Send Commands</button>
 
-   	<input id="message" ng-keypress="messageKeypress($event)" ></input>
-	<button ng-click="doMessage()">Play Message!</button>
-	<div>
-		<textarea id="output" type="text" rows="10" cols="10" ng-model="simulator.character"></textarea>
-		<textarea id="outputPosition" type="text" rows="10" cols="20" ></textarea>
-	</div>
+    <div>
+        <button ng-click="whatTimeIsIt()">What time is it?</button>
+    	<button ng-click="playback()">Playback!</button>
+
+       	<input id="message" ng-keypress="messageKeypress($event)" ></input>
+    	<button ng-click="doMessage()">Play Message!</button>
+    </div>
+
+    <div>
+        <span>Bot Commands: </span> <span id="commandCount"> {{getCommandCount()}} </span>
+    </div>
+    <div id="commandsContainer">
+        <div>
+            <div><button ng-click="sendCommands()">Send Commands</button></div>
+            <div><textarea id="output" type="text" rows="10" cols="20" ng-model="simulatorModel.commands"></textarea></div>
+            <div><button ng-click="clearCommands()">Clear Commands</button></div>
+        </div>
+    </div>
+
+    <div id="strokesContainer">
+        <div><button ng-click="sendStrokes()">Send Strokes</button></div>
+        <div>
+            <textarea id="outputPosition" type="text" rows="10" cols="20" ng-model="simulatorModel.strokes"></textarea>
+        </div>
+        <div><button ng-click="clearStrokes()">Clear Strokes</button></div>
+    </div>
 </div>

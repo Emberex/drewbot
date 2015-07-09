@@ -33,14 +33,6 @@ angular.module('em-drewbot').controller('DrewbotClientController', ['$http',
             });
         };
 
-        this.sendStrokes = function() {
-            $http.post('/drawStrokes', {strokes: handFont["1"]}).success(function(data, status, headers, config) {
-                self.model.commandResponse = data;
-            }).error(function(data, status, headers, config) {
-                self.model.commandResponse = data;
-            });
-        };
-
         function sendCommand(command) {
             $http.post('/command', {command: command}).success(function(data, status, headers, config) {
                 self.model.commandResponse = data;
@@ -52,6 +44,5 @@ angular.module('em-drewbot').controller('DrewbotClientController', ['$http',
         function endsWith(str, suffix) {
             return str.indexOf(suffix, str.length - suffix.length) !== -1;
         }
-
     }
 ]);

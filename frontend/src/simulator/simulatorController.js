@@ -1,40 +1,64 @@
-angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot',
-    function($scope, $http, bot) {
+angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot', 'simulatorDataService', '$timeout',
+    function($scope, $http, bot, simulatorDataService, $timeout) {
 
-        $scope.simulator = {
-            character: undefined,
-            response: undefined
+        $scope.simulatorModel = simulatorDataService.getSimulatorModel();
+
+        $scope.getCommandCount = function() {
+            return $scope.simulatorModel.commands.split("\n").length - 1;
         };
 
         $scope.sendCommands = function() {
-            var characterElem = document.getElementById("output");
-            var characterArray = characterElem.value.trim().split("\n");
+            var commandsArray = $scope.simulatorModel.commands.trim().split("\n");
 
-            console.log("writeCharacter: ", characterArray);
+            console.log("commands: ", commandsArray);
 
-            $http.post('/commands', {commands: characterArray}).success(function(data, status, headers, config) {
-                $scope.simulator.response = data;
+            $http.post('/commands', {commands: commandsArray}).success(function(data, status, headers, config) {
+                $scope.simulatorModel.response = data;
             }).error(function(data, status, headers, config) {
-                $scope.simulator.response = data;
+                $scope.simulatorModel.response = data;
             });
         };
 
+        $scope.clearCommands = function() {
+            $scope.simulatorModel.commands = "";
+        };
+
+        $scope.sendStrokes = function() {
+            console.log("$scope.simulatorModel.strokes: ", $scope.simulatorModel.strokes);
+
+            // $http.post('/drawStrokes', {strokes: handFont["1"]}).success(function(data, status, headers, config) {
+            //     self.model.commandResponse = data;
+            // }).error(function(data, status, headers, config) {
+            //     self.model.commandResponse = data;
+            // });
+        };
+
+        $scope.clearStrokes = function() {
+            $scope.simulatorModel.strokes = "";
+        };
+
         $scope.playback = function() {
-            bot.playback();
+            $timeout(function() {
+                bot.playback();
+            });
         };
 
         $scope.messageKeypress = function(event) {
            if (event.keyCode == 13) {
-              bot.doMessage();
+              $scope.doMessage();
            }
         };
 
         $scope.doMessage = function() {
-            bot.doMessage();
+            $timeout(function() {
+                bot.doMessage();
+            });
         };
 
         $scope.whatTimeIsIt = function() {
-            bot.whatTimeIsIt();
+            $timeout(function() {
+                bot.whatTimeIsIt();
+            });
         };
     }
 ]);
