@@ -6,13 +6,13 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
             response: undefined
         };
 
-        $scope.writeCharacter = function() {
+        $scope.sendCommands = function() {
             var characterElem = document.getElementById("output");
             var characterArray = characterElem.value.trim().split("\n");
 
             console.log("writeCharacter: ", characterArray);
 
-            $http.post('/writeCharacter', {commands: characterArray}).success(function(data, status, headers, config) {
+            $http.post('/commands', {commands: characterArray}).success(function(data, status, headers, config) {
                 $scope.simulator.response = data;
             }).error(function(data, status, headers, config) {
                 $scope.simulator.response = data;

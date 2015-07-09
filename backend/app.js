@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var command = require('./routes/command');
+var commands = require('./routes/commands');
 var connectArduino = require('./routes/connectArduino');
-var writeCharacter = require('./routes/writeCharacter');
 var drawStrokes = require('./routes/drawStrokes');
 
 var app = express();
@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', routes);
 app.use('/command', command);
-app.use('/writeCharacter', writeCharacter);
+app.use('/commands', commands);
 app.use('/connectArduino', connectArduino);
 app.use('/drawStrokes', drawStrokes);
 

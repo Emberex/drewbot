@@ -15,7 +15,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
       var backgroundImg = new Image();
       backgroundImg.src = "/images/paper.jpg";
-      
+
       var strokePoints = [];
 
       var playbackStrokes = [];
@@ -49,7 +49,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
          if (stroke.draw) {
             // Only draw the point if it's within drawing distance of the bases,
-            // TODO and it doesn't cause the arms to buckle inward 
+            // TODO and it doesn't cause the arms to buckle inward
             if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
                updatePosition(stroke.point);
                strokePoints.push(stroke);
@@ -71,7 +71,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          if (isNaN(xPos) || isNaN(yPos)) {
             return;
          }
-   	  
+
          globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
          globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
@@ -80,12 +80,10 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          instance.update();
       }
-      
+
       function addOutputAngleText(leftAngle, rightAngle) {
-         console.log("leftAngle: ", leftAngle);
-         console.log("rightAngle: ", rightAngle);
          botDraw.addOutputText("L" + (180 - Math.floor(leftAngle.degrees)));
-         botDraw.addOutputText("R" + (180 - Math.floor(rightAngle.degrees)));   
+         botDraw.addOutputText("R" + (180 - Math.floor(rightAngle.degrees)));
       }
 
       function servoEndPoint(arm) {
@@ -101,7 +99,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          var intersectionPoints = botEngine.circleIntersectionPoints(point1, p1Length, point2, p2Length);
          var connectionPoint;
 
-         // Use max y - it should never buckle down   
+         // Use max y - it should never buckle down
 
          if (intersectionPoints[1].y > intersectionPoints[0].y) {
             connectionPoint = intersectionPoints[1];
@@ -112,11 +110,11 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          return connectionPoint;
       }
 
-      function draw(baseLeft, baseRight) {   
-               
+      function draw(baseLeft, baseRight) {
+
          // Add background image to canvas
-         botDraw.getContext().drawImage(backgroundImg, 0, -120); 
-         
+         botDraw.getContext().drawImage(backgroundImg, 0, -120);
+
          // Add box for char size
          botDraw.drawCharOutline({ "x": baseLeft.point.x, "y": simulatorConstants.ARMLENGTH * 0.9 }, simulatorConstants.ARMLENGTH * 0.5, simulatorConstants.ARMLENGTH * 0.5);
 
@@ -132,7 +130,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          botDraw.drawLine(leftEndPoint, connectionPoint, "#0000ff");
          botDraw.drawLine(rightEndPoint, connectionPoint, "#ff0000");
-         
+
          // If we're in drawing mode, draw the current set of points
          botDraw.applyStrokes(strokePoints);
 
@@ -175,11 +173,11 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          var rightEndPoint = servoEndPoint(rightBaseArm);
 
          botDraw.clearCanvas();
-                  
+
          // Draw the base arms
          botDraw.drawLine(leftBaseArm.point, leftEndPoint, "#111111");
          botDraw.drawLine(rightBaseArm.point, rightEndPoint, "#00ff00");
-                        
+
          // Determine where connection, and draw top arms.
          var connectionPoint = positionOfConnection(leftEndPoint, leftBaseArm.length, rightEndPoint, rightBaseArm.length);
 
@@ -207,37 +205,34 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          var json = '{ "data": [' + document.getElementById("outputPosition").value + "0]}";
          var points = JSON.parse(json);
-         
+
          for (var i = 0; i<points.data.length;i++) {
             playbackStrokes.push( new Stroke(points.data[i].x, points.data[i].y, true));
          }
-         
+
          strokePoints = [];
          playbackIndex = 0;
-         
+
          onePlaybackStep();
       };
-      
+
       instance.whatTimeIsIt = function() {
 
          playbackStrokes = botDigitalClock.getTimeAsStrokes();
-         console.log(playbackStrokes);
          strokePoints = []; // reset
          playbackStrokes.push(new Stroke(310,190,false));
          playbackIndex = 0;
-         onePlaybackStep();
          
-         //setTimeout(instance.whatTimeIsIt, 20000);
+         onePlaybackStep();
       };
-      
+
       instance.doMessage = function() {
 
          playbackStrokes = botCharGenerator.convertToStrokes(document.getElementById("message").value);
-         console.log(playbackStrokes);
          strokePoints = []; // reset
          playbackStrokes.push( new Stroke(310,190,false));
          playbackIndex = 0;
-         
+
          onePlaybackStep();
       };
 
