@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts"/>
-angular.module('em-drewbot').factory('botDraw', ["$rootScope", "simulatorDataService",
-    function($rootScope, simulatorDataService) {
+angular.module('em-drewbot').factory('botDraw', ["simulatorDataService",
+    function(simulatorDataService) {
 
         var instance = {};
 
@@ -10,7 +10,6 @@ angular.module('em-drewbot').factory('botDraw', ["$rootScope", "simulatorDataSer
             simulatorModel.commands = simulatorModel.commands + str + '\n';
             var elem = document.getElementById("output");
             elem.scrollTop = elem.scrollHeight;
-            $rootScope.$apply();
         };
 
         instance.clearCanvas = function() {
@@ -64,7 +63,6 @@ angular.module('em-drewbot').factory('botDraw', ["$rootScope", "simulatorDataSer
             simulatorModel.strokes = simulatorModel.strokes + '{ "x": ' + Math.floor(point.x) + ', "y": ' + Math.floor(point.y) + ' },';
             var elem = document.getElementById("outputPosition");
             elem.scrollTop = elem.scrollHeight;
-            $rootScope.$apply();
         };
 
         instance.drawCircle = function(point, length) {

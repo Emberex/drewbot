@@ -6,7 +6,7 @@ angular.module('em-drewbot').factory('simulatorDataService', [
             strokes: "",
             commands: "",
             response: "",
-            commandCount: 0
+            recording: false
         };
 
         instance.getSimulatorModel = function() {
@@ -18,7 +18,7 @@ angular.module('em-drewbot').factory('simulatorDataService', [
                 strokes: "",
                 commands: "",
                 response: "",
-                commandCount: 0
+                recording: false
             };
         };
 

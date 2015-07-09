@@ -1,5 +1,5 @@
-angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot', 'simulatorDataService', '$timeout',
-    function($scope, $http, bot, simulatorDataService, $timeout) {
+angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot', 'simulatorDataService',
+    function($scope, $http, bot, simulatorDataService) {
 
         $scope.simulatorModel = simulatorDataService.getSimulatorModel();
 
@@ -38,9 +38,7 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
         };
 
         $scope.playback = function() {
-            $timeout(function() {
-                bot.playback();
-            });
+            bot.playback();
         };
 
         $scope.messageKeypress = function(event) {
@@ -50,15 +48,11 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
         };
 
         $scope.doMessage = function() {
-            $timeout(function() {
-                bot.doMessage();
-            });
+            bot.doMessage();
         };
 
         $scope.whatTimeIsIt = function() {
-            $timeout(function() {
-                bot.whatTimeIsIt();
-            });
+            bot.whatTimeIsIt();
         };
     }
 ]);

@@ -5,10 +5,11 @@
 
     <div>
         <button ng-click="whatTimeIsIt()">What time is it?</button>
-    	<button ng-click="playback()">Playback!</button>
+    	<button ng-click="playback()">Play Strokes!</button>
 
        	<input id="message" ng-keypress="messageKeypress($event)" ></input>
     	<button ng-click="doMessage()">Play Message!</button>
+        <label>Recording: <input type="checkbox" ng-model="simulatorModel.recording" /></label>
     </div>
 
     <div>
