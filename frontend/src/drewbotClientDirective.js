@@ -3,6 +3,7 @@ angular.module('em-drewbot').directive('emDrewbotClient', [
 		return {
 			scope: {},
 			controller: 'DrewbotClientController',
+            controllerAs: 'DrewbotClient',
 			templateUrl: 'drewbotClient.html'
 		};
 	}]

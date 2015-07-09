@@ -1,20 +1,20 @@
 <div>
 	<div class="controls">
-		<div class="calibration"> 
-			<button ng-click="left90()">Set Left To 90 -- 'l90'</button>
-			<button ng-click="right90()">Set Right To 90 -- 'r90'</button>
-			<button ng-click="lifter90()">Set Lifter To 90 -- 'i90'</button>
+		<div class="calibration">
+			<button ng-click="DrewbotClient.left90()">Set Left To 90 -- 'l90'</button>
+			<button ng-click="DrewbotClient.right90()">Set Right To 90 -- 'r90'</button>
+			<button ng-click="DrewbotClient.lifter90()">Set Lifter To 90 -- 'i90'</button>
 		</div>
-		<div class="test">	
-		    <input type="text" ng-model="model.customCommand" placeholder="send a custom command"/>
-		    <button ng-click="sendCustomCommand()">Send</button>
+		<div class="test">
+		    <input type="text" ng-model="DrewbotClient.model.customCommand" placeholder="send a custom command"/>
+		    <button ng-click="DrewbotClient.sendCustomCommand()">Send</button>
 		</div>
 		<div>
-			<button ng-click="connectArduino()">Connect Arduino</button>
-		</div>		
-		<p>{{model.commandResponse}}</p>
+			<button ng-click="DrewbotClient.connectArduino()">Connect Arduino</button>
+		</div>
+		<p>{{DrewbotClient.model.commandResponse}}</p>
 	</div>
-	<button ng-click="sendStrokes()">send strokes</button>
+	<button ng-click="DrewbotClient.sendStrokes()">send strokes</button>
 	<em-simulator></em-simulator>
-	
+
 </div>
