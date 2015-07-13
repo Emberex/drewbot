@@ -9,7 +9,7 @@
 
        	<input id="message" ng-keypress="messageKeypress($event)" ></input>
     	<button ng-click="doMessage()">Play Message!</button>
-        <label>Recording: <input type="checkbox" ng-model="simulatorModel.recording" /></label>
+        <label>Recording: <input type="checkbox" ng-model="simulatorModel.isRecording" ng-change="recordingClicked()" /></label>
     </div>
 
     <div>

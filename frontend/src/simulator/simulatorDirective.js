@@ -1,29 +1,30 @@
 angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw', 'simulatorDataService',
 	function(bot, botDraw, simulatorDataService) {
-		return {
+        return {
 			scope: {},
 			templateUrl: 'simulator/simulator.html',
 			controller: 'SimulatorController',
 			controllerAs: 'simulator',
-			link: function(scope, elem, attrs) {
+			link: function($scope, elem, attrs) {
 				var canvasElement = elem.find("#canvas");
 
-				var shouldDraw = false;
+				var mouseDown = false;
 				canvasElement.mousemove(function (event) {
-					bot.moveToMousePos(canvas, event, shouldDraw);
-                    scope.$apply();
+					bot.moveToMousePos(canvas, event, mouseDown);
+                    $scope.$apply();
 				});
 
-	         	canvasElement.mousedown(function (event) {
-		            simulatorDataService.clearModel();
-		            bot.clearStrokePoints();
-					shouldDraw = true;
-                    scope.$apply();
-         		});
+                canvasElement.mousedown(function (event) {
+                    if(!simulatorDataService.isRecording()) {
+                        simulatorDataService.clearStrokesAndCommands();
+                        bot.clearStrokePoints();
+                        $scope.$apply();
+                    }
+                    mouseDown = true;
+                });
 
 	         	canvasElement.mouseup(function (event) {
-					shouldDraw = false;
-                    scope.$apply();
+					mouseDown = false;
 	         	});
 
 				bot.update();

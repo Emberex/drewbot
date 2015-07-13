@@ -37,6 +37,13 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
             $scope.simulatorModel.strokes = "";
         };
 
+        $scope.recordingClicked = function() {
+            if($scope.simulatorModel.isRecording) {
+                simulatorDataService.clearStrokesAndCommands();
+                bot.clearStrokePoints();
+            }
+        };
+
         $scope.playback = function() {
             bot.playback();
         };

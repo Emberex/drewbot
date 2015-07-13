@@ -5,8 +5,8 @@
 /* global addOutputPositionText */
 /* global Point */
 
-angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 'botDraw', 'botDigitalClock', 'botCharGenerator',
-   function(botEngine, simulatorConstants, botDraw, botDigitalClock, botCharGenerator) {
+angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 'botDraw', 'botDigitalClock', 'botCharGenerator', 'simulatorDataService',
+   function(botEngine, simulatorConstants, botDraw, botDigitalClock, botCharGenerator, simulatorDataService) {
 
       var instance = {};
 
@@ -44,24 +44,25 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          draw(leftBaseArm, rightBaseArm);
       };
 
-      function moveToPos(stroke) {
-         var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
-         var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
-         if (stroke.draw) {
+        function moveToPos(stroke) {
+            var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
+            var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+            if (stroke.draw) {
             // Only draw the point if it's within drawing distance of the bases,
             // TODO and it doesn't cause the arms to buckle inward
-            if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
-               updatePosition(stroke.point);
-               strokePoints.push(stroke);
-               botDraw.drawCircle(stroke.point, 15);
+                if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
+                    updatePosition(stroke.point);
+                    strokePoints.push(stroke);
+                    botDraw.drawCircle(stroke.point, 15);
+                } else {
+                    instance.update();
+                }
             } else {
-               instance.update();
+                strokePoints.push(stroke);
+                instance.update();
             }
-         } else {
-            instance.update();
-         }
-         botDraw.addTextAtPosition("  (" + stroke.point.x + "," + stroke.point.y + ")", stroke.point);
-      }
+            botDraw.addTextAtPosition("  (" + stroke.point.x + "," + stroke.point.y + ")", stroke.point);
+        }
 
       function updatePosition(positionPoint) {
 
@@ -222,7 +223,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          strokePoints = []; // reset
          playbackStrokes.push(new Stroke(310,190,false));
          playbackIndex = 0;
-         
+
          onePlaybackStep();
       };
 
