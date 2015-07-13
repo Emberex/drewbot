@@ -10,12 +10,13 @@ angular.module('em-drewbot').directive('emSimulator', ['bot', 'botDraw', 'simula
 
 				var mouseDown = false;
 				canvasElement.mousemove(function (event) {
+                    simulatorDataService.getSimulatorModel().isRecording = event.shiftKey;
 					bot.moveToMousePos(canvas, event, mouseDown);
                     $scope.$apply();
 				});
 
                 canvasElement.mousedown(function (event) {
-                    if(!simulatorDataService.isRecording()) {
+                    if(!event.shiftKey) {
                         simulatorDataService.clearStrokesAndCommands();
                         bot.clearStrokePoints();
                         $scope.$apply();
