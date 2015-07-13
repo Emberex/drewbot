@@ -59,8 +59,9 @@ angular.module('em-drewbot').factory('botDraw', ["simulatorDataService",
             canvasContext.fillText(text, position.x, position.y);
         };
 
-        instance.addOutputPositionText = function(point) {
-            simulatorModel.strokes = simulatorModel.strokes + '{ "x": ' + Math.floor(point.x) + ', "y": ' + Math.floor(point.y) + ' },';
+        instance.addOutputPositionText = function(stroke) {
+            var point = stroke.point;
+            simulatorModel.strokes = simulatorModel.strokes + '{ "x": ' + Math.floor(point.x) + ', "y": ' + Math.floor(point.y) + ', "draw": ' + stroke.draw + ' },';
             var elem = document.getElementById("outputPosition");
             elem.scrollTop = elem.scrollHeight;
         };

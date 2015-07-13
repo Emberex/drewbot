@@ -14,17 +14,17 @@ function getCommands(strokes) {
 }
 
 //one stroke turns into 3 commands
-function getCommand(stroke) {    
+function getCommand(stroke) {
     var commands = [];
-    
+
     globalLeftAngle = determineBaseAngleFromPosition(stroke, getLeftBaseArm(globalLeftAngle), true);
     globalRightAngle = determineBaseAngleFromPosition(stroke, getRightBaseArm(globalRightAngle), false);
-    
+
     if(stroke.draw) {
-        commands.push("i102");
+        commands.push("i102"); //down
     } else {
-        commands.push("i90");
-    }    
+        commands.push("i90"); //up
+    }
     commands.push("l" + (180 - Math.floor(globalLeftAngle.degrees)));
     commands.push("r" + (180 - Math.floor(globalRightAngle.degrees)));
     return commands;
@@ -48,7 +48,7 @@ function determineBaseAngleFromPosition(strokePoint, baseArm, isLeft) {
         x = points[1].x;
         y = points[1].y;
     }
-    
+
     var result;
     if (x <= baseArm.point.x) {
         result = new Angle(Math.PI - Math.asin(y / baseArm.length), false);
@@ -68,22 +68,22 @@ function circleIntersectionPoints(p1, p1Length, p2, p2Length) {
     var b = p1.y;
     var c = p2.x;
     var d = p2.y;
-    
+
     var D = Math.sqrt(Math.pow(c - a, 2) + Math.pow(d - b, 2));
-    
+
     var delta = Math.sqrt((D + p1Length + p2Length) * (D + p1Length - p2Length) * (D - p1Length + p2Length) * (-D + p1Length + p2Length)) / 4.0;
-    
+
     var xBase = (a + c) / 2.0 + (c - a) * (p2Length * p2Length - p1Length * p1Length) / (2.0 * D * D);
     var yBase = (b + d) / 2.0 + (d - b) * (p2Length * p2Length - p1Length * p1Length) / (2.0 * D * D);
-    
+
     var x1 = xBase + 2 * (d - b) * delta / (D * D);
     var x2 = xBase - 2 * (d - b) * delta / (D * D);
     var y1 = yBase - 2 * (c - a) * delta / (D * D);
     var y2 = yBase + 2 * (c - a) * delta / (D * D);
-    
+
     connectionPoints[0] = new Point(x1, y1);
     connectionPoints[1] = new Point(x2, y2);
-    
+
     return connectionPoints;
 }
 

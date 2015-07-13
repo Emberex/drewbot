@@ -21,13 +21,13 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       var playbackStrokes = [];
       var playbackIndex;
 
-      instance.moveToMousePos = function moveToMousePos(canvas, evt, draw) {
+      instance.moveToMousePos = function moveToMousePos(canvas, evt, mouseDown) {
          var rect = canvas.getBoundingClientRect();
          var stroke = new Stroke(
             evt.clientX - rect.left,
             evt.clientY - rect.top,
-            draw);
-         moveToPos(stroke);
+            mouseDown);
+         moveToPos(stroke, evt.shiftKey);
       };
 
       instance.clearStrokePoints = function() {
@@ -44,43 +44,40 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          draw(leftBaseArm, rightBaseArm);
       };
 
-        function moveToPos(stroke) {
+        function moveToPos(stroke, shitKeyDown) {
             var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
             var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
-            if (stroke.draw) {
-            // Only draw the point if it's within drawing distance of the bases,
-            // TODO and it doesn't cause the arms to buckle inward
+
+            if(shitKeyDown || (!shitKeyDown && stroke.draw)) {
                 if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
-                    updatePosition(stroke.point);
+                    updatePosition(stroke);
                     strokePoints.push(stroke);
                     botDraw.drawCircle(stroke.point, 15);
                 } else {
                     instance.update();
                 }
             } else {
-                strokePoints.push(stroke);
                 instance.update();
             }
             botDraw.addTextAtPosition("  (" + stroke.point.x + "," + stroke.point.y + ")", stroke.point);
         }
 
-      function updatePosition(positionPoint) {
+        function updatePosition(positionStroke) {
 
-         var xPos = positionPoint.x;
-         var yPos = positionPoint.y;
+            var positionPoint = positionStroke.point;
 
-         if (isNaN(xPos) || isNaN(yPos)) {
-            return;
-         }
+            if (isNaN(positionPoint.x) || isNaN(positionPoint.y)) {
+                return;
+            }
 
-         globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
-         globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
+            globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
+            globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
 
-         addOutputAngleText(globalLeftAngle, globalRightAngle);
-         botDraw.addOutputPositionText(positionPoint);
+            addOutputAngleText(globalLeftAngle, globalRightAngle);
+            botDraw.addOutputPositionText(positionStroke);
 
-         instance.update();
-      }
+            instance.update();
+        }
 
       function addOutputAngleText(leftAngle, rightAngle) {
          botDraw.addOutputText("L" + (180 - Math.floor(leftAngle.degrees)));
