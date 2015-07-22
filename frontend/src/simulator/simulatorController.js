@@ -25,13 +25,20 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
 
         $scope.sendStrokes = function() {
             console.log("$scope.simulatorModel.strokes: ", $scope.simulatorModel.strokes);
-
-            // $http.post('/drawStrokes', {strokes: handFont["1"]}).success(function(data, status, headers, config) {
-            //     self.model.commandResponse = data;
-            // }).error(function(data, status, headers, config) {
-            //     self.model.commandResponse = data;
-            // });
+            if(endsWith($scope.simulatorModel.strokes, ",")) {
+                $scope.simulatorModel.strokes = $scope.simulatorModel.strokes.substring(0, $scope.simulatorModel.strokes.length - 1);
+            }
+            var JSONStrokes = JSON.parse("[" + $scope.simulatorModel.strokes + "]");
+            $http.post('/drawStrokes', {strokes: JSONStrokes}).success(function(data, status, headers, config) {
+                //self.model.commandResponse = data;
+            }).error(function(data, status, headers, config) {
+                //self.model.commandResponse = data;
+            });
         };
+
+        function endsWith(str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
+        }
 
         $scope.clearStrokes = function() {
             $scope.simulatorModel.strokes = "";

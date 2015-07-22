@@ -5,11 +5,12 @@ var globalLeftAngle = new Angle(125, true);
 var globalRightAngle = new Angle(75, true);
 
 function getCommands(strokes) {
-    //TODO remove duplicate strokes
+
     var commands = [];
     strokes.forEach(function(stroke, index, array) {
         commands = commands.concat(getCommand(stroke));
     });
+    //TODO remove duplicate commands
     return commands;
 }
 
