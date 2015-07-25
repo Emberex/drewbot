@@ -1,5 +1,5 @@
-angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot', 'simulatorDataService',
-    function($scope, $http, bot, simulatorDataService) {
+angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http', 'bot', 'simulatorDataService', 'sanitizationService',
+    function($scope, $http, bot, simulatorDataService, sanitizationService) {
 
         $scope.simulatorModel = simulatorDataService.getSimulatorModel();
 
@@ -29,6 +29,10 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
                 $scope.simulatorModel.strokes = $scope.simulatorModel.strokes.substring(0, $scope.simulatorModel.strokes.length - 1);
             }
             var JSONStrokes = JSON.parse("[" + $scope.simulatorModel.strokes + "]");
+
+            JSONStrokes = sanitizationService.removeDuplicateStrokes(JSONStrokes);
+            JSONStrokes = sanitizationService.removeExtraUpStokes(JSONStrokes);
+
             $http.post('/drawStrokes', {strokes: JSONStrokes}).success(function(data, status, headers, config) {
                 //self.model.commandResponse = data;
             }).error(function(data, status, headers, config) {
