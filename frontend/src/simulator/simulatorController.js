@@ -24,19 +24,15 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
         };
 
         $scope.sendStrokes = function() {
-            console.log("$scope.simulatorModel.strokes: ", $scope.simulatorModel.strokes);
             if(endsWith($scope.simulatorModel.strokes, ",")) {
                 $scope.simulatorModel.strokes = $scope.simulatorModel.strokes.substring(0, $scope.simulatorModel.strokes.length - 1);
             }
             var JSONStrokes = JSON.parse("[" + $scope.simulatorModel.strokes + "]");
 
-            JSONStrokes = sanitizationService.removeDuplicateStrokes(JSONStrokes);
-            JSONStrokes = sanitizationService.removeExtraUpStokes(JSONStrokes);
-
             $http.post('/drawStrokes', {strokes: JSONStrokes}).success(function(data, status, headers, config) {
-                //self.model.commandResponse = data;
+                $scope.simulatorModel.response = data;
             }).error(function(data, status, headers, config) {
-                //self.model.commandResponse = data;
+                $scope.simulatorModel.response = data;
             });
         };
 
@@ -46,6 +42,30 @@ angular.module('em-drewbot').controller('SimulatorController', ['$scope', '$http
 
         $scope.clearStrokes = function() {
             $scope.simulatorModel.strokes = "";
+        };
+        
+        $scope.makeFont = function() {
+            if(endsWith($scope.simulatorModel.strokes, ",")) {
+                $scope.simulatorModel.strokes = $scope.simulatorModel.strokes.substring(0, $scope.simulatorModel.strokes.length - 1);
+            }
+            var JSONStrokes = JSON.parse("[" + $scope.simulatorModel.strokes + "]");
+            JSONStrokes = sanitizationService.removeDuplicateStrokes(JSONStrokes);
+            JSONStrokes = sanitizationService.removeExtraUpStokes(JSONStrokes);
+            $scope.simulatorModel.fontStrokes = JSON.stringify(JSONStrokes);
+        };
+        
+        $scope.sendFont = function() {
+            var JSONStrokes = JSON.parse($scope.simulatorModel.fontStrokes);
+            console.log("JSONStrokes: ", JSONStrokes);
+            $http.post('/drawStrokes', {strokes: JSONStrokes}).success(function(data, status, headers, config) {
+                $scope.simulatorModel.response = data;
+            }).error(function(data, status, headers, config) {
+                $scope.simulatorModel.response = data;
+            });
+        };
+        
+        $scope.clearFont = function() {
+            $scope.simulatorModel.fontStrokes = "";
         };
 
         $scope.recordingClicked = function() {

@@ -5,6 +5,7 @@ angular.module('em-drewbot').factory('simulatorDataService', [
         var simulatorModel = {
             strokes: "",
             commands: "",
+            fontStrokes: "",
             response: "",
             isRecording: false
         };
@@ -20,6 +21,7 @@ angular.module('em-drewbot').factory('simulatorDataService', [
         instance.clearModel = function() {
             simulatorModel.strokes = "";
             simulatorModel.commands = "";
+            simulatorModel.fontStrokes = "";
             simulatorModel.response = "";
             simulatorModel.isRecording = false;
         };

@@ -30,4 +30,16 @@
         </div>
         <div><button ng-click="clearStrokes()">Clear Strokes</button></div>
     </div>
+    
+    <div id="makeFont">
+        <button ng-click="makeFont()">Make Font -></button>
+    </div>
+    
+    <div id="fontContainer">
+        <div><button ng-click="sendFont()">Send Font Strokes</button></div>
+        <div>
+            <textarea id="fontOutput" type="text" rows="10" cols="20" ng-model="simulatorModel.fontStrokes"></textarea>
+        </div>
+        <div><button ng-click="clearFont()">Clear Font Strokes</button></div>
+    </div>
 </div>

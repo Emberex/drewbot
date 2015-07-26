@@ -38,15 +38,15 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          botDraw.clearCanvas();
 
-         var leftBaseArm = getLeftBaseArm(globalLeftAngle);
-         var rightBaseArm = getRightBaseArm(globalRightAngle);
+         var leftBaseArm = instance.getLeftBaseArm(globalLeftAngle);
+         var rightBaseArm = instance.getRightBaseArm(globalRightAngle);
 
          draw(leftBaseArm, rightBaseArm);
       };
 
         function moveToPos(stroke, shitKeyDown) {
-            var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
-            var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+            var tempLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getLeftBaseArm(globalLeftAngle), true);
+            var tempRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getRightBaseArm(globalRightAngle), false);
 
             if(shitKeyDown || (!shitKeyDown && stroke.draw)) {
                 if (!isNaN(tempLeftAngle.degrees) && !isNaN(tempRightAngle.degrees)) {
@@ -70,8 +70,8 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
                 return;
             }
 
-            globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getLeftBaseArm(globalLeftAngle), true);
-            globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, getRightBaseArm(globalRightAngle), false);
+            globalLeftAngle = botEngine.determineBaseAngleFromPosition(positionPoint, instance.getLeftBaseArm(globalLeftAngle), true);
+            globalRightAngle = botEngine.determineBaseAngleFromPosition(positionPoint, instance.getRightBaseArm(globalRightAngle), false);
 
             addOutputAngleText(globalLeftAngle, globalRightAngle);
             botDraw.addOutputPositionText(positionStroke);
@@ -138,34 +138,27 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
          botDraw.addTextAtPosition("  Right(" + Math.floor(baseRight.angle.degrees) + "\u00B0)", baseRight.point);
       }
 
-      function getLeftBaseArm(angle) {
+      instance.getLeftBaseArm = function(angle) {
          var arm = new Arm(simulatorConstants.ARMLENGTH * 2, 0, angle, simulatorConstants.ARMLENGTH);
          return arm;
-      }
+      };
 
-      function getRightBaseArm(angle) {
+      instance.getRightBaseArm = function(angle) {
          var arm = new Arm(simulatorConstants.ARMLENGTH * 2.25, 0, angle, simulatorConstants.ARMLENGTH);
          return arm;
-      }
+      };
 
       function onePlaybackStep() {
 
          var stroke = playbackStrokes[playbackIndex++];
          strokePoints.push(stroke);
-
-         // Remove repeated points.
-      //   if (playbackIndex > 0 && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x && playbackStrokes[playbackIndex].x == playbackStrokes[playbackIndex].x) {
-      //      if (playbackIndex < playbackStrokes.length) {
-      //         setTimeout(onePlaybackStep, 30);
-      //      }
-      //   }
-
+         
          //debugger; //jshint ignore:line
-         globalLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getLeftBaseArm(globalLeftAngle), true);
-         globalRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, getRightBaseArm(globalRightAngle), false);
+         globalLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getLeftBaseArm(globalLeftAngle), true);
+         globalRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getRightBaseArm(globalRightAngle), false);
 
-         var leftBaseArm = getLeftBaseArm(globalLeftAngle);
-         var rightBaseArm = getRightBaseArm(globalRightAngle);
+         var leftBaseArm = instance.getLeftBaseArm(globalLeftAngle);
+         var rightBaseArm = instance.getRightBaseArm(globalRightAngle);
 
          var leftEndPoint = servoEndPoint(leftBaseArm);
          var rightEndPoint = servoEndPoint(rightBaseArm);

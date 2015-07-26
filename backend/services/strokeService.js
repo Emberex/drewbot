@@ -10,7 +10,6 @@ function getCommands(strokes) {
     strokes.forEach(function(stroke, index, array) {
         commands = commands.concat(getCommand(stroke));
     });
-    //TODO remove duplicate commands
     return commands;
 }
 
