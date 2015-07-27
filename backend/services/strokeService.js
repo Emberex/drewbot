@@ -7,27 +7,35 @@ var globalRightAngle = new Angle(75, true);
 function getCommands(strokes) {
 
     var commands = [];
+    var lastStroke;
     strokes.forEach(function(stroke, index, array) {
-        commands = commands.concat(getCommand(stroke));
+        commands = commands.concat(getCommand(stroke, lastStroke));
+        lastStroke = stroke;
     });
     return commands;
 }
 
-//one stroke turns into 3 commands
-function getCommand(stroke) {
+//one stroke turns into 2 or 3 commands
+function getCommand(stroke, lastStroke) {
     var commands = [];
 
     globalLeftAngle = determineBaseAngleFromPosition(stroke, getLeftBaseArm(globalLeftAngle), true);
     globalRightAngle = determineBaseAngleFromPosition(stroke, getRightBaseArm(globalRightAngle), false);
 
-    if(stroke.draw) {
-        commands.push("i102"); //down
-    } else {
-        commands.push("i90"); //up
+    if(!lastStroke || lastStroke.draw !== stroke.draw) {
+        if(stroke.draw) {
+            commands.push("i102"); //down
+        } else {
+            commands.push("i90"); //up
+        }
     }
     commands.push("l" + (180 - Math.floor(globalLeftAngle.degrees)));
     commands.push("r" + (180 - Math.floor(globalRightAngle.degrees)));
     return commands;
+}
+
+function removeExtraDownCommands(commands) {
+    
 }
 
 function determineBaseAngleFromPosition(strokePoint, baseArm, isLeft) {

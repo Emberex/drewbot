@@ -8,7 +8,6 @@ var router = express.Router();
 router.post('/', function(req, res) {
     
     var commands = strokeService.getCommands(req.body.strokes);
-    console.log("commands: ", commands);
     serialportService.writeCommands(commands);
     
     res.send('Drawing Strokes... ' + drewbotUtils.getCurrentFormattedTime());

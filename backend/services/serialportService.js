@@ -32,58 +32,25 @@ function writeCommand(command) {
 }
 
 function writeCommands(commands) {
-    console.log(commands);
     /* jshint ignore:start */
-
-    var lastR;
-    var lastL;
-    var lastI;
-    var timeoutCounter = 0;
-
     for (var i = 0; i < commands.length;) {
-
         if(commands[i].indexOf("i") === -1) {
-            var doL = commands[i].indexOf("l") === 0 && commands[i] !== lastL;
-            console.log("L: ",commands[i], " ", lastL," ", commands[i].indexOf("l"));
-            if(doL) {
-                lastL = commands[i];
-            }
-            var doR = commands[i+1].indexOf("r") === 0 && commands[i+1] !== lastR;
-            console.log("R: ",commands[i+1], " ", lastR," ", commands[i+1].indexOf("r"));
-            if(doR) {
-                lastR = commands[i+1];
-            }
-            if(doL || doR) {
-                (function(i, timeoutCounter){
-                    setTimeout(function(){
-                        if(doL) {
-                            var command1 = commands[i] + "\n";
-                            writeCommand(command1);
-                            console.log(command1);
-                        }
-                        if(doR) {
-                            var command2 = commands[i+1] + "\n";
-                            writeCommand(command2);
-                            console.log(command2);
-                        }
-                    }, 300 * timeoutCounter);
-                }(i, timeoutCounter));
-                timeoutCounter++;
-            }
+            (function(i){
+                setTimeout(function() {
+                    var commandL = commands[i] + "\n";
+                    var commandR = commands[i+1] + "\n";
+                    writeCommand(commandL);
+                    writeCommand(commandR);
+                }, 100 * i);
+            }(i));
             i = i+2;
         } else {
-            console.log("I: ", commands[i], " ", lastI," ", commands[i].indexOf("i"));
-            if(commands[i].indexOf("i") === 0 && commands[i] !== lastI) {
-                (function(i, timeoutCounter){
-                    setTimeout(function(){
-                        var commandI = commands[i] + "\n";
-                        console.log(commandI);
-                        writeCommand(commandI);
-                    }, 300 * timeoutCounter);
-                }(i, timeoutCounter));
-                timeoutCounter++;
-                lastI = commands[i];
-            }
+            (function(i){
+                setTimeout(function() {
+                    var commandI = commands[i] + "\n";
+                    writeCommand(commandI);
+                }, 100 * i);
+            }(i));
             i = i+1;
         }
     }
