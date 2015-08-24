@@ -41,7 +41,7 @@ function writeCommands(commands) {
                     var commandR = commands[i+1] + "\n";
                     writeCommand(commandL);
                     writeCommand(commandR);
-                }, 100 * i);
+                }, 20 * i);
             }(i));
             i = i+2;
         } else {
@@ -49,7 +49,7 @@ function writeCommands(commands) {
                 setTimeout(function() {
                     var commandI = commands[i] + "\n";
                     writeCommand(commandI);
-                }, 100 * i);
+                }, 20 * i);
             }(i));
             i = i+1;
         }

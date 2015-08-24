@@ -35,7 +35,7 @@ function getCommand(stroke, lastStroke) {
 }
 
 function removeExtraDownCommands(commands) {
-    
+
 }
 
 function determineBaseAngleFromPosition(strokePoint, baseArm, isLeft) {
@@ -100,7 +100,7 @@ function getLeftBaseArm(angle) {
 }
 
 function getRightBaseArm(angle) {
-    return new Arm(ARM_LENGTH * 2.25, 0, angle, ARM_LENGTH);
+    return new Arm(ARM_LENGTH * 2 + CANVAS_SCALE_FACTOR * 20, 0, angle, ARM_LENGTH);
 }
 
 function deg2Rad(angle) {

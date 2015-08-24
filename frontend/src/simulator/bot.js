@@ -144,7 +144,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
       };
 
       instance.getRightBaseArm = function(angle) {
-         var arm = new Arm(simulatorConstants.ARMLENGTH * 2.25, 0, angle, simulatorConstants.ARMLENGTH);
+         var arm = new Arm(simulatorConstants.ARMLENGTH * 2 + 4 * 20, 0, angle, simulatorConstants.ARMLENGTH);
          return arm;
       };
 
@@ -152,7 +152,7 @@ angular.module('em-drewbot').factory('bot', ['botEngine', 'simulatorConstants', 
 
          var stroke = playbackStrokes[playbackIndex++];
          strokePoints.push(stroke);
-         
+
          //debugger; //jshint ignore:line
          globalLeftAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getLeftBaseArm(globalLeftAngle), true);
          globalRightAngle = botEngine.determineBaseAngleFromPosition(stroke.point, instance.getRightBaseArm(globalRightAngle), false);
