@@ -6,3 +6,5 @@ frontend/drewbotClient-templates.js
 pkgscript.log
 npm-debug.log
 /.DS_Store
+.vscode/launch.json
+.vscode/settings.json
